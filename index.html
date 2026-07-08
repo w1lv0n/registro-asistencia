@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AIP · Registro de Asistencia</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Fraunces:ital,wght@0,700;1,400&display=swap');
+
+    :root {
+      --rojo: #b71c1c;
+      --rojo-mid: #8b1717;
+      --rojo-luz: #f8d6d3;
+      --oro: #d39f1a;
+      --oro-luz: #f9e3a9;
+      --fondo: #fbf0c8;
+      --texto: #2f1f0c;
+      --muted: #7c5a2f;
+      --blanco: #ffffff;
+      --radio: 18px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: radial-gradient(circle at top, rgba(211,159,26,.16), transparent 28%),
+                  linear-gradient(180deg, #fff7d8 0%, var(--fondo) 100%);
+      color: var(--texto);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 0 48px;
+    }
+
+    /* ── HEADER ── */
+    header {
+      width: 100%;
+      max-width: 900px;
+      background: linear-gradient(180deg, #8b1616 0%, var(--rojo) 100%);
+      padding: 30px 24px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 6px solid var(--oro);
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 14px;
+      background: linear-gradient(90deg, var(--rojo) 0%, var(--blanco) 18%, var(--rojo) 38%, var(--oro) 100%);
+    }
+    header::after {
+      content: '';
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      width: 160px;
+      height: 160px;
+      transform: translateX(-50%);
+      background: radial-gradient(circle at center, rgba(255,255,255,.16), transparent 52%);
+      pointer-events: none;
+    }
+    .ie-badge {
+      display: inline-block;
+      background: rgba(255,255,255,.18);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 999px;
+      color: var(--blanco);
+      font-size: 11px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: 6px 18px;
+      margin-bottom: 12px;
+    }
+    header h1 {
+      font-family: 'Fraunces', serif;
+      color: var(--blanco);
+      font-size: clamp(28px, 3vw, 36px);
+      line-height: 1.05;
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
+    header p {
+      color: rgba(255,255,255,.84);
+      font-size: 14px;
+      margin-top: 10px;
+      font-weight: 300;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--blanco);
+      border: 1px solid rgba(211,159,26,.24);
+      border-radius: calc(var(--radio) + 4px);
+      box-shadow: 0 20px 50px rgba(120, 72, 19, .08);
+      width: min(520px, calc(100% - 32px));
+      margin-top: 34px;
+      overflow: hidden;
+    }
+    .card-header {
+      background: linear-gradient(135deg, rgba(211,159,26,.16), rgba(255,255,255,.95));
+      padding: 22px 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border-bottom: 1px solid rgba(198,160,61,.32);
+    }
+    .card-icon {
+      width: 46px;
+      height: 46px;
+      background: var(--oro);
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.22);
+    }
+    .card-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: none;
+      stroke: var(--rojo);
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--rojo);
+    }
+    .card-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .card-body {
+      padding: 24px;
+    }
+
+    /* ── SEARCH ── */
+    .search-wrap {
+      position: relative;
+      margin-bottom: 18px;
+    }
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+    .search-icon svg {
+      width: 18px;
+      height: 18px;
+      stroke: var(--muted);
+      fill: none;
+      stroke-width: 2;
+    }
+    #search-input {
+      width: 100%;
+      padding: 13px 14px 13px 44px;
+      border: 1.5px solid rgba(211,159,26,.28);
+      border-radius: 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      color: var(--texto);
+      background: #fbf8ef;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s, background .2s;
+    }
+    #search-input:focus {
+      border-color: var(--rojo);
+      background: var(--blanco);
+      box-shadow: 0 0 0 4px rgba(179,28,28,.08);
+    }
+
+    /* ── LISTA ── */
+    #lista-docentes {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .docente-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 18px;
+      border: 1px solid rgba(179,28,28,.14);
+      border-radius: 16px;
+      cursor: pointer;
+      transition: background .18s, border-color .18s, transform .15s, box-shadow .18s;
+      text-decoration: none;
+      color: inherit;
+      background: #fff;
+    }
+    .docente-item:hover, .docente-item:focus {
+      background: var(--oro-luz);
+      border-color: var(--oro);
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(179,28,28,.1);
+      outline: none;
+    }
+    .avatar {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: var(--rojo);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      font-family: 'Fraunces', serif;
+      font-size: 16px;
+      color: var(--oro-luz);
+      font-style: italic;
+      box-shadow: inset 0 0 0 3px rgba(255,255,255,.12);
+    }
+    .docente-nombre {
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .docente-area {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .chevron {
+      margin-left: auto;
+      color: var(--muted);
+      opacity: .7;
+    }
+    .chevron svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+    }
+
+    .empty-msg,
+    .loading-msg,
+    .error-msg {
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      padding: 24px 0;
+      display: none;
+    }
+    .error-msg {
+      color: #b71c1c;
+    }
+
+    .spinner {
+      width: 28px;
+      height: 28px;
+      border: 3px solid rgba(179,28,28,.18);
+      border-top-color: var(--rojo);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      margin: 0 auto 10px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── FOOTER ── */
+    .footer-note {
+      margin-top: 30px;
+      font-size: 11px;
+      color: var(--muted);
+      text-align: center;
+      opacity: .8;
+      max-width: 520px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="ie-badge">Aula de Innovación Pedagógica</div>
+  <h1>I.E. El Dorado 3073</h1>
+  <p>Registro de uso del AIP · Ciclo 2026</p>
+</header>
+
+<div class="card">
+  <div class="card-header">
+    <div class="card-icon">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    </div>
+    <div>
+      <div class="card-title">Seleccionar docente</div>
+      <div class="card-sub">Toca tu nombre para continuar</div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="search-wrap">
+      <span class="search-icon">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </span>
+      <input id="search-input" type="text" placeholder="Buscar docente…" autocomplete="off" />
+    </div>
+    <div class="loading-msg" id="loading-msg"><div class="spinner"></div>Cargando docentes…</div>
+    <div class="error-msg" id="error-msg"></div>
+    <ul id="lista-docentes"></ul>
+    <div class="empty-msg" id="empty-msg">No se encontró ningún docente con ese nombre.</div>
+  </div>
+</div>
+
+<div class="footer-note">Coordinador AIP · Acceso restringido por docente</div>
+
+<script src="config.js"></script>
+<script>
+  // ╔══════════════════════════════════════════════════════════╗
+  // ║  La lista de docentes se arma automáticamente leyendo la ║
+  // ║  columna DOCENTE del propio registro (CSV_URL). Así nunca ║
+  // ║  hay que mantener una lista aparte a mano.                ║
+  // ╚══════════════════════════════════════════════════════════╝
+
+  // Datos de respaldo solo para MODO_DEMO = true
+  const DOCENTES_DEMO = [
+    { nombre: "Liz Silva Cerna", area: "Matemática" },
+  ];
+
+  // Columnas del CSV (0-index), igual que en registro.html
+  const COL = { AREA: 4, DOCENTE: 5 };
+
+  function initiales(nombre) {
+    const parts = nombre.trim().split(/\s+/);
+    return (parts[0][0] + (parts[1] ? parts[1][0] : '')).toUpperCase();
+  }
+
+  // Parser carácter a carácter: respeta saltos de línea dentro de
+  // celdas con comillas (celdas multilínea). Dividir primero por '\n'
+  // rompe esas celdas y desalinea las columnas siguientes.
+  function parseCSV(text) {
+    const rows = [];
+    let row = [];
+    let field = '';
+    let inQuotes = false;
+    let i = 0;
+    const len = text.length;
+
+    while (i < len) {
+      const ch = text[i];
+
+      if (inQuotes) {
+        if (ch === '"') {
+          if (text[i + 1] === '"') { field += '"'; i += 2; continue; }
+          inQuotes = false; i++; continue;
+        }
+        field += ch; i++; continue;
+      }
+
+      if (ch === '"') { inQuotes = true; i++; continue; }
+      if (ch === ',') { row.push(field); field = ''; i++; continue; }
+      if (ch === '\r') { i++; continue; }
+      if (ch === '\n') {
+        row.push(field); rows.push(row);
+        row = []; field = ''; i++; continue;
+      }
+      field += ch; i++;
+    }
+    if (field.length > 0 || row.length > 0) {
+      row.push(field);
+      rows.push(row);
+    }
+
+    return rows
+      .filter(r => !(r.length === 1 && r[0].trim() === ''))
+      .map(r => r.map(c => c.trim()));
+  }
+
+  function extraerDocentes(rows) {
+    const mapa = new Map(); // nombre -> area
+    // rows[0] = encabezados, datos desde rows[1]
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i];
+      const nombre = (row[COL.DOCENTE] || '').trim();
+      if (!nombre) continue;
+      if (/^no\s*asisti[oó]$/i.test(nombre)) continue;
+      if (!mapa.has(nombre)) {
+        mapa.set(nombre, (row[COL.AREA] || '').trim());
+      }
+    }
+    return Array.from(mapa.entries())
+      .map(([nombre, area]) => ({ nombre, area }))
+      .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'));
+  }
+
+  let DOCENTES = [];
+
+  const lista       = document.getElementById('lista-docentes');
+  const emptyMsg     = document.getElementById('empty-msg');
+  const loadingMsg   = document.getElementById('loading-msg');
+  const errorMsg     = document.getElementById('error-msg');
+  const searchInput  = document.getElementById('search-input');
+
+  function renderLista(filtro = '') {
+    lista.innerHTML = '';
+    const filtrados = DOCENTES.filter(d =>
+      d.nombre.toLowerCase().includes(filtro.toLowerCase())
+    );
+    emptyMsg.style.display = (filtrados.length === 0 && DOCENTES.length > 0) ? 'block' : 'none';
+    filtrados.forEach(d => {
+      const li = document.createElement('li');
+      const a  = document.createElement('a');
+      a.className = 'docente-item';
+      a.href = `registro.html?docente=${encodeURIComponent(d.nombre)}`;
+      a.setAttribute('role', 'button');
+      a.innerHTML = `
+        <div class="avatar">${initiales(d.nombre)}</div>
+        <div>
+          <div class="docente-nombre">${d.nombre}</div>
+          <div class="docente-area">${d.area || ''}</div>
+        </div>
+        <span class="chevron"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+      `;
+      li.appendChild(a);
+      lista.appendChild(li);
+    });
+  }
+
+  async function cargarDocentes() {
+    loadingMsg.style.display = 'block';
+    errorMsg.style.display = 'none';
+
+    try {
+      if (typeof MODO_DEMO !== 'undefined' && MODO_DEMO) {
+        await new Promise(r => setTimeout(r, 300));
+        DOCENTES = DOCENTES_DEMO;
+      } else {
+        const resp = await fetch(`${CSV_URL}&t=${Date.now()}`);
+        if (!resp.ok) throw new Error('No se pudo leer el registro.');
+        const text = await resp.text();
+        const rows = parseCSV(text);
+        DOCENTES = extraerDocentes(rows);
+      }
+      loadingMsg.style.display = 'none';
+      renderLista(searchInput.value);
+    } catch (e) {
+      loadingMsg.style.display = 'none';
+      errorMsg.textContent = '⚠️ No se pudo cargar la lista de docentes. Verifica tu conexión.';
+      errorMsg.style.display = 'block';
+    }
+  }
+
+  searchInput.addEventListener('input', e => renderLista(e.target.value));
+  cargarDocentes();
+</script>
+</body>
+</html>
