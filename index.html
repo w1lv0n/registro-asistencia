@@ -15,9 +15,12 @@
       --oro-luz: #fff1bf;
       --azul: #0d2f63;
       --azul-2: #174f9c;
-      --verde: #139a58;
+      --verde: #16b98e;
       --cyan: #0f9da8;
       --morado: #7c4bd7;
+      --progress-good: #16b98e;
+      --progress-mid: #f6b042;
+      --progress-bad: #ff6b6b;
       --fondo: #f7f2df;
       --panel: #ffffff;
       --linea: #eadfc5;
@@ -1200,6 +1203,41 @@
         text-overflow: ellipsis;
       }
 
+    /* New styles for prototype widgets */
+    .teacher-progress {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      width: 100%;
+    }
+
+    .progress-bar {
+      height: 12px;
+      background: #f1f3f6;
+      border-radius: 999px;
+      overflow: hidden;
+      flex: 1 1 auto;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,.04);
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--progress-good);
+      border-radius: 999px;
+      transition: width .5s ease;
+    }
+
+    .legend-marker { display:inline-block; width:12px; height:12px; border-radius:3px; margin-right:8px; vertical-align: -2px }
+
+    .progress-meta {
+      min-width: 74px;
+      text-align: right;
+      font-weight: 800;
+      color: var(--azul);
+    }
+
+    .mini-legend { font-size: 12px; color: var(--muted); margin-top:6px }
+
       .icon-btn svg,
       .primary-btn svg {
         flex: 0 0 auto;
@@ -1419,7 +1457,10 @@
                   <span class="section-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span>
                   Docentes
                 </div>
-                <span class="muted-small">Dias asistidos</span>
+                <div style="display:flex;align-items:center;gap:8px">
+                  <span class="muted-small">Dias asistidos</span>
+                  <button id="teacher-filter-btn" type="button" class="icon-btn" title="Mostrar top 8 / todos">Top 8</button>
+                </div>
               </div>
               <div class="teacher-list" id="teacher-ranking"></div>
             </section>
@@ -1587,7 +1628,10 @@
 </div>
 
 <script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
 <script>
+  let teachersChart = null;
+
   const DOCENTES_DEMO = [
     { nombre: 'Liz Silva Cerna', area: 'Matematica' },
     { nombre: 'Carmen Rosa Escalante Loza', area: 'Matematica' },
@@ -2025,24 +2069,155 @@
       .map(item => ({ ...item, total: item.days.size }))
       .sort((a, b) => b.total - a.total || a.nombre.localeCompare(b.nombre, 'es'));
 
+    // destroy previous chart instance before removing DOM nodes to avoid Chart.js losing context
+    if (teachersChart) { try { teachersChart.destroy(); } catch (e) {} teachersChart = null; }
     box.innerHTML = '';
     if (!rows.length) {
       box.innerHTML = '<div class="muted-small">No hay asistencias para el periodo seleccionado.</div>';
+      // destroy chart if exists
+      if (teachersChart) { teachersChart.destroy(); teachersChart = null; }
       return;
     }
 
-    rows.slice(0, 8).forEach(item => {
+    const showAll = document.body.getAttribute('data-teacher-list') === 'all';
+    const TOP = showAll ? rows : rows.slice(0, 8);
+    TOP.forEach(item => {
       const div = document.createElement('div');
       div.className = 'teacher-row';
+      const pct = Math.min(100, Math.round((item.total / 4) * 100));
+      const cumplio = item.total >= 4;
+      const color = pct >= 75 ? getComputedStyle(document.documentElement).getPropertyValue('--progress-good').trim() : (pct >= 50 ? getComputedStyle(document.documentElement).getPropertyValue('--progress-mid').trim() : getComputedStyle(document.documentElement).getPropertyValue('--progress-bad').trim());
       div.innerHTML = `
         <div class="avatar">${initiales(item.nombre)}</div>
-        <div>
-          <div class="teacher-name">${escapeHTML(item.nombre)}</div>
+        <div style="width:100%">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="teacher-name">${escapeHTML(item.nombre)}</div>
+            ${cumplio ? '<span class="status ok" style="margin-left:8px">Cumpli\u00f3</span>' : ''}
+          </div>
+          <div class="teacher-progress">
+            <div class="progress-bar" aria-hidden="true"><div class="progress-fill" style="width:${pct}%; background:${color};"></div></div>
+            <div class="progress-meta">${item.total}/4</div>
+          </div>
+          <div class="mini-legend">Meta mensual: 4 dias • ${pct}%</div>
         </div>
-        <div class="teacher-count">${item.total} ${item.total === 1 ? 'dia' : 'dias'}</div>
       `;
+      // click to open docente report
+      div.style.cursor = 'pointer';
+      div.addEventListener('click', () => {
+        selectedTeacher = item.nombre;
+        renderTeacherReport();
+        setView('docente');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
       box.appendChild(div);
     });
+
+    // render/update Chart.js horizontal bar showing top teachers
+    const chartContainerId = 'teachers-chart-canvas';
+    let canvas = document.getElementById(chartContainerId);
+    if (!canvas) {
+      canvas = document.createElement('canvas');
+      canvas.id = chartContainerId;
+      canvas.style.marginTop = '12px';
+      canvas.style.maxHeight = '220px';
+      box.appendChild(canvas);
+    }
+
+    const labels = TOP.map(t => nombreCorto(t.nombre));
+    const data = TOP.map(t => t.total);
+
+    if (teachersChart) {
+      teachersChart.data.labels = labels;
+      teachersChart.data.datasets[0].data = data;
+      teachersChart.update();
+    } else {
+      teachersChart = new Chart(canvas.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Dias asistidos',
+            data,
+            backgroundColor: labels.map((_,i) => {
+              const pct = Math.min(100, Math.round((TOP[i].total / 4) * 100));
+              return pct >= 75 ? getComputedStyle(document.documentElement).getPropertyValue('--progress-good').trim() : (pct >=50 ? getComputedStyle(document.documentElement).getPropertyValue('--progress-mid').trim() : getComputedStyle(document.documentElement).getPropertyValue('--progress-bad').trim());
+            }),
+            borderRadius: 8,
+            barThickness: 14,
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          maintainAspectRatio: false,
+          scales: {
+            x: { beginAtZero: true, max: 4, ticks: { stepSize: 1, color: getComputedStyle(document.documentElement).getPropertyValue('--azul').trim() } },
+            y: { ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--azul').trim(), font: { weight: 800 } } }
+          },
+          plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => `${ctx.parsed.x} dias` } } }
+        }
+      });
+    }
+    // add small legend describing color meaning
+    let legendEl = document.getElementById('teachers-color-legend');
+    if (!legendEl) {
+      legendEl = document.createElement('div');
+      legendEl.id = 'teachers-color-legend';
+      legendEl.className = 'mini-legend';
+      legendEl.style.marginTop = '8px';
+      legendEl.innerHTML = `
+        <span class="legend-marker" style="background:${getComputedStyle(document.documentElement).getPropertyValue('--progress-good').trim()}"></span> Buena (>=75%)
+        &nbsp;&nbsp;
+        <span class="legend-marker" style="background:${getComputedStyle(document.documentElement).getPropertyValue('--progress-mid').trim()}"></span> Media (50–74%)
+        &nbsp;&nbsp;
+        <span class="legend-marker" style="background:${getComputedStyle(document.documentElement).getPropertyValue('--progress-bad').trim()}"></span> Baja (<50%)
+      `;
+      box.appendChild(legendEl);
+    } else {
+      // update colors if exists
+      legendEl.querySelectorAll('.legend-marker')[0].style.background = getComputedStyle(document.documentElement).getPropertyValue('--progress-good').trim();
+      legendEl.querySelectorAll('.legend-marker')[1].style.background = getComputedStyle(document.documentElement).getPropertyValue('--progress-mid').trim();
+      legendEl.querySelectorAll('.legend-marker')[2].style.background = getComputedStyle(document.documentElement).getPropertyValue('--progress-bad').trim();
+    }
+    // add export button under chart
+    const exportBtnId = 'teachers-chart-export';
+    let exp = document.getElementById(exportBtnId);
+    if (!exp) {
+      exp = document.createElement('button');
+      exp.id = exportBtnId;
+      exp.type = 'button';
+      exp.className = 'icon-btn';
+      exp.style.marginTop = '8px';
+      exp.textContent = 'Exportar gráfico';
+      exp.addEventListener('click', exportTeachersChartPNG);
+      box.appendChild(exp);
+    }
+    // add subtle animation to progress fills
+    setTimeout(() => {
+      box.querySelectorAll('.progress-fill').forEach(el => el.style.transition = 'width .7s cubic-bezier(.2,.9,.2,1)');
+    }, 60);
+  }
+
+  // Toggle Top 8 / All
+  document.getElementById('teacher-filter-btn').addEventListener('click', function() {
+    const cur = document.body.getAttribute('data-teacher-list');
+    document.body.setAttribute('data-teacher-list', cur === 'all' ? 'top' : 'all');
+    this.textContent = document.body.getAttribute('data-teacher-list') === 'all' ? 'Todos' : 'Top 8';
+    renderReporte();
+  });
+
+  function exportTeachersChartPNG() {
+    if (!teachersChart) return;
+    try {
+      const url = teachersChart.toBase64Image();
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `docentes_top_${currentYear}_${zeroPad(currentMonth+1)}.png`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } catch (e) {
+      alert('No se pudo exportar el gráfico.');
+    }
   }
 
   function renderTeacherReport() {
