@@ -3,244 +3,1036 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AIP · Registro de Asistencia</title>
+  <title>AIP - Reporte de Asistencia Docente</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Fraunces:ital,wght@0,700;1,400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Fraunces:ital,wght@0,700;1,400&display=swap');
 
     :root {
       --rojo: #b71c1c;
-      --rojo-mid: #8b1717;
-      --rojo-luz: #f8d6d3;
+      --rojo-oscuro: #7f1212;
+      --rojo-luz: #fde8e6;
       --oro: #d39f1a;
-      --oro-luz: #f9e3a9;
-      --fondo: #fbf0c8;
-      --texto: #2f1f0c;
-      --muted: #7c5a2f;
-      --blanco: #ffffff;
-      --radio: 18px;
+      --oro-luz: #fff1bf;
+      --azul: #0d2f63;
+      --azul-2: #174f9c;
+      --verde: #139a58;
+      --cyan: #0f9da8;
+      --morado: #7c4bd7;
+      --fondo: #f7f2df;
+      --panel: #ffffff;
+      --linea: #eadfc5;
+      --texto: #241b12;
+      --muted: #735f43;
+      --sombra: 0 18px 48px rgba(74, 48, 18, .10);
+      --radio: 16px;
     }
 
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'DM Sans', sans-serif;
-      background: radial-gradient(circle at top, rgba(211,159,26,.16), transparent 28%),
-                  linear-gradient(180deg, #fff7d8 0%, var(--fondo) 100%);
-      color: var(--texto);
       min-height: 100dvh;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--texto);
+      background:
+        radial-gradient(circle at top left, rgba(211,159,26,.18), transparent 30%),
+        linear-gradient(180deg, #fff9df 0%, var(--fondo) 100%);
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    .app {
+      min-height: 100dvh;
+      display: grid;
+      grid-template-columns: 248px 1fr;
+    }
+
+    .sidebar {
+      background: linear-gradient(180deg, var(--rojo-oscuro) 0%, #3f0a0a 100%);
+      color: #fff;
+      padding: 24px 18px;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      padding: 0 0 48px;
-    }
-
-    /* ── HEADER ── */
-    header {
-      width: 100%;
-      max-width: 900px;
-      background: linear-gradient(180deg, #8b1616 0%, var(--rojo) 100%);
-      padding: 30px 24px 24px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-      border-bottom: 6px solid var(--oro);
-    }
-    header::before {
-      content: '';
-      position: absolute;
+      gap: 22px;
+      position: sticky;
       top: 0;
-      left: 0;
-      right: 0;
-      height: 14px;
-      background: linear-gradient(90deg, var(--rojo) 0%, var(--blanco) 18%, var(--rojo) 38%, var(--oro) 100%);
-    }
-    header::after {
-      content: '';
-      position: absolute;
-      top: 14px;
-      left: 50%;
-      width: 160px;
-      height: 160px;
-      transform: translateX(-50%);
-      background: radial-gradient(circle at center, rgba(255,255,255,.16), transparent 52%);
-      pointer-events: none;
-    }
-    .ie-badge {
-      display: inline-block;
-      background: rgba(255,255,255,.18);
-      border: 1px solid rgba(255,255,255,.2);
-      border-radius: 999px;
-      color: var(--blanco);
-      font-size: 11px;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      padding: 6px 18px;
-      margin-bottom: 12px;
-    }
-    header h1 {
-      font-family: 'Fraunces', serif;
-      color: var(--blanco);
-      font-size: clamp(28px, 3vw, 36px);
-      line-height: 1.05;
-      font-weight: 700;
-      letter-spacing: .02em;
-    }
-    header p {
-      color: rgba(255,255,255,.84);
-      font-size: 14px;
-      margin-top: 10px;
-      font-weight: 300;
+      height: 100dvh;
     }
 
-    /* ── CARD ── */
-    .card {
-      background: var(--blanco);
-      border: 1px solid rgba(211,159,26,.24);
-      border-radius: calc(var(--radio) + 4px);
-      box-shadow: 0 20px 50px rgba(120, 72, 19, .08);
-      width: min(520px, calc(100% - 32px));
-      margin-top: 34px;
-      overflow: hidden;
-    }
-    .card-header {
-      background: linear-gradient(135deg, rgba(211,159,26,.16), rgba(255,255,255,.95));
-      padding: 22px 24px;
+    .brand {
       display: flex;
       align-items: center;
-      gap: 14px;
-      border-bottom: 1px solid rgba(198,160,61,.32);
+      gap: 12px;
+      padding: 8px 6px 18px;
+      border-bottom: 1px solid rgba(255,255,255,.14);
     }
-    .card-icon {
+
+    .brand-mark {
       width: 46px;
       height: 46px;
-      background: var(--oro);
       border-radius: 14px;
       display: grid;
       place-items: center;
-      flex-shrink: 0;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.22);
+      background: var(--oro);
+      color: var(--rojo-oscuro);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.28);
     }
-    .card-icon svg {
-      width: 24px;
-      height: 24px;
+
+    .brand-mark svg,
+    .nav-item svg,
+    .icon-btn svg,
+    .primary-btn svg,
+    .metric-icon svg,
+    .section-icon svg {
+      width: 21px;
+      height: 21px;
       fill: none;
-      stroke: var(--rojo);
-      stroke-width: 2.2;
+      stroke: currentColor;
+      stroke-width: 2;
       stroke-linecap: round;
       stroke-linejoin: round;
     }
-    .card-title {
-      font-size: 15px;
+
+    .brand-title {
       font-weight: 700;
-      color: var(--rojo);
-    }
-    .card-sub {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 2px;
+      line-height: 1.1;
     }
 
-    .card-body {
-      padding: 24px;
+    .brand-sub {
+      font-size: 12px;
+      color: rgba(255,255,255,.72);
+      margin-top: 3px;
     }
 
-    /* ── SEARCH ── */
-    .search-wrap {
-      position: relative;
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .nav-item {
+      width: 100%;
+      min-height: 48px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: rgba(255,255,255,.84);
+      background: transparent;
+      text-align: left;
+      transition: background .18s, color .18s, transform .12s;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      background: rgba(211,159,26,.20);
+      color: #fff;
+    }
+
+    .nav-item:active {
+      transform: translateY(1px);
+    }
+
+    .sidebar-foot {
+      margin-top: auto;
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 14px;
+      padding: 14px;
+      font-size: 12px;
+      line-height: 1.5;
+      color: rgba(255,255,255,.76);
+    }
+
+    .sidebar-foot strong {
+      color: #fff;
+      display: block;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    .main {
+      padding: 26px;
+      min-width: 0;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
       margin-bottom: 18px;
     }
-    .search-icon {
+
+    .page-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 11px;
+      border: 1px solid rgba(183,28,28,.18);
+      border-radius: 999px;
+      color: var(--rojo);
+      background: rgba(255,255,255,.62);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(28px, 3.6vw, 42px);
+      line-height: 1.05;
+      color: var(--azul);
+      letter-spacing: 0;
+    }
+
+    .page-subtitle {
+      color: var(--muted);
+      margin-top: 8px;
+      line-height: 1.5;
+      max-width: 760px;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .toolbar > * {
+      min-width: 0;
+    }
+
+    .control {
+      height: 42px;
+      border: 1px solid var(--linea);
+      background: rgba(255,255,255,.82);
+      color: var(--azul);
+      border-radius: 11px;
+      padding: 0 12px;
+      outline: none;
+      min-width: 150px;
+    }
+
+    .search {
+      position: relative;
+    }
+
+    .search input {
+      height: 42px;
+      width: 220px;
+      border: 1px solid var(--linea);
+      background: rgba(255,255,255,.86);
+      border-radius: 11px;
+      padding: 0 12px 0 40px;
+      color: var(--texto);
+      outline: none;
+    }
+
+    .search svg {
       position: absolute;
-      left: 14px;
+      left: 13px;
       top: 50%;
       transform: translateY(-50%);
-      pointer-events: none;
-    }
-    .search-icon svg {
       width: 18px;
       height: 18px;
       stroke: var(--muted);
       fill: none;
       stroke-width: 2;
     }
-    #search-input {
-      width: 100%;
-      padding: 13px 14px 13px 44px;
-      border: 1.5px solid rgba(211,159,26,.28);
-      border-radius: 14px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 15px;
-      color: var(--texto);
-      background: #fbf8ef;
-      outline: none;
-      transition: border-color .2s, box-shadow .2s, background .2s;
-    }
-    #search-input:focus {
-      border-color: var(--rojo);
-      background: var(--blanco);
-      box-shadow: 0 0 0 4px rgba(179,28,28,.08);
+
+    .icon-btn,
+    .primary-btn {
+      height: 42px;
+      border-radius: 11px;
+      padding: 0 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      white-space: nowrap;
     }
 
-    /* ── LISTA ── */
+    .icon-btn {
+      border: 1px solid var(--linea);
+      background: rgba(255,255,255,.86);
+      color: var(--azul);
+    }
+
+    .primary-btn {
+      background: var(--rojo);
+      color: #fff;
+      font-weight: 700;
+      box-shadow: 0 12px 24px rgba(183,28,28,.18);
+    }
+
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .metric-card,
+    .panel {
+      background: rgba(255,255,255,.92);
+      border: 1px solid var(--linea);
+      border-radius: var(--radio);
+      box-shadow: var(--sombra);
+    }
+
+    .metric-card {
+      padding: 18px;
+      display: flex;
+      gap: 14px;
+      min-height: 116px;
+      align-items: center;
+    }
+
+    .metric-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+    }
+
+    .metric-icon.red { background: var(--rojo-luz); color: var(--rojo); }
+    .metric-icon.gold { background: var(--oro-luz); color: #8a5d00; }
+    .metric-icon.green { background: #dcf8e9; color: var(--verde); }
+    .metric-icon.cyan { background: #dff8fb; color: var(--cyan); }
+
+    .metric-label {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .metric-value {
+      font-size: 34px;
+      line-height: 1;
+      font-weight: 700;
+      color: var(--azul);
+      margin-top: 7px;
+    }
+
+    .metric-note {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(360px, .75fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .panel {
+      padding: 18px;
+      min-width: 0;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--azul);
+      font-weight: 800;
+      font-size: 17px;
+    }
+
+    .section-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      background: #eaf1ff;
+      color: var(--azul-2);
+    }
+
+    .muted-small {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .calendar-head {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+
+    .month-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: #fff;
+      border: 1px solid var(--linea);
+      color: var(--azul);
+      display: grid;
+      place-items: center;
+    }
+
+    .month-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .calendar-title {
+      min-width: 190px;
+      text-align: center;
+      color: var(--azul);
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      border: 1px solid #dbe2ed;
+      border-radius: 11px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .calendar-day-name {
+      background: var(--azul);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      text-align: center;
+      padding: 8px 4px;
+    }
+
+    .calendar-cell {
+      min-height: 92px;
+      padding: 7px;
+      border-right: 1px solid #e8edf4;
+      border-top: 1px solid #e8edf4;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .calendar-cell:nth-child(7n) {
+      border-right: 0;
+    }
+
+    .calendar-cell.out {
+      background: #f7f8fb;
+      color: #9aa7b8;
+    }
+
+    .day-number {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--azul);
+      margin-bottom: 5px;
+    }
+
+    .calendar-cell.out .day-number {
+      color: #a8b1bd;
+    }
+
+    .event-pill {
+      display: block;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      border-radius: 7px;
+      padding: 2px 6px;
+      font-size: 11px;
+      margin-top: 3px;
+      color: #5b240f;
+      background: #ffe8c4;
+      border: 1px solid #f6cc88;
+    }
+
+    .event-more {
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 4px;
+    }
+
+    .teacher-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .teacher-row {
+      display: grid;
+      grid-template-columns: 42px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 11px 12px;
+      border: 1px solid #ece4d4;
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--rojo);
+      color: #fff4ca;
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 14px;
+      box-shadow: inset 0 0 0 3px rgba(255,255,255,.14);
+    }
+
+    .teacher-name {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--texto);
+      line-height: 1.25;
+    }
+
+    .teacher-count {
+      color: var(--azul);
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .lower-grid {
+      display: grid;
+      grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .monthly-summary {
+      display: grid;
+      grid-template-columns: 210px 1fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .monthly-stats {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 24px;
+      padding-right: 18px;
+      border-right: 1px solid #dce3ee;
+    }
+
+    .month-stat {
+      display: grid;
+      grid-template-columns: 14px 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .month-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-top: 6px;
+      background: var(--azul-2);
+    }
+
+    .month-dot.current {
+      background: #11b95f;
+    }
+
+    .month-stat-label {
+      color: var(--azul);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .month-stat-number {
+      color: var(--azul);
+      font-size: 34px;
+      font-weight: 800;
+      line-height: 1;
+      margin-top: 7px;
+    }
+
+    .month-stat-number span {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-left: 5px;
+    }
+
+    .chart-area {
+      min-width: 0;
+    }
+
+    .chart-title {
+      color: var(--azul);
+      font-weight: 800;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .bar-chart {
+      height: 210px;
+      display: flex;
+      align-items: end;
+      gap: 10px;
+      padding: 24px 4px 0;
+      border-bottom: 1px solid #dce3ee;
+      background-image: linear-gradient(to top, #e8edf5 1px, transparent 1px);
+      background-size: 100% 42px;
+    }
+
+    .bar-item {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+      height: 100%;
+      justify-content: flex-end;
+    }
+
+    .bar {
+      width: min(30px, 70%);
+      min-height: 4px;
+      border-radius: 9px 9px 0 0;
+      background: #cfe0fb;
+      position: relative;
+    }
+
+    .bar.previous {
+      background: #0d56c5;
+    }
+
+    .bar.current {
+      background: #15bf62;
+    }
+
+    .bar strong {
+      position: absolute;
+      left: 50%;
+      top: -20px;
+      transform: translateX(-50%);
+      color: var(--azul);
+      font-size: 12px;
+    }
+
+    .bar-label {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .chart-legend {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+      color: var(--azul);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .legend-dot {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      margin-right: 6px;
+      vertical-align: -1px;
+      background: #cfe0fb;
+    }
+
+    .legend-dot.previous { background: #0d56c5; }
+    .legend-dot.current { background: #15bf62; }
+
+    .indicators-grid {
+      display: grid;
+      grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr);
+      gap: 12px;
+    }
+
+    .indicator-card {
+      border: 1px solid #e8dfcd;
+      border-radius: 13px;
+      background: #fff;
+      padding: 14px;
+      min-width: 0;
+    }
+
+    .indicator-title {
+      color: var(--azul);
+      font-size: 13px;
+      font-weight: 800;
+      text-align: center;
+      line-height: 1.25;
+    }
+
+    .indicator-subtitle {
+      color: var(--muted);
+      font-size: 11px;
+      text-align: center;
+      margin-top: 2px;
+    }
+
+    .donut-wrap {
+      display: grid;
+      place-items: center;
+      margin: 14px 0 10px;
+    }
+
+    .donut {
+      width: 150px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: conic-gradient(#16b8b7 0deg, #16b8b7 var(--asistencia-deg), #ff7474 var(--asistencia-deg), #ff7474 360deg);
+      position: relative;
+    }
+
+    .donut::after {
+      content: '';
+      position: absolute;
+      width: 88px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: inset 0 0 0 1px #edf0f4;
+    }
+
+    .donut-center {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      color: var(--azul);
+      font-weight: 800;
+      font-size: 28px;
+      line-height: 1;
+    }
+
+    .donut-center span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .donut-legend {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--azul);
+    }
+
+    .donut-legend strong {
+      display: block;
+      margin-top: 2px;
+    }
+
+    .legend-dot.attendance {
+      background: #16b8b7;
+    }
+
+    .legend-dot.absence {
+      background: #ff7474;
+    }
+
+    .trend-chart {
+      height: 210px;
+      margin-top: 10px;
+    }
+
+    .trend-chart svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .trend-axis {
+      stroke: #dce3ee;
+      stroke-width: 1;
+    }
+
+    .trend-grid {
+      stroke: #edf1f6;
+      stroke-width: 1;
+    }
+
+    .trend-line {
+      fill: none;
+      stroke: #12aeb5;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .trend-area {
+      fill: rgba(18,174,181,.10);
+    }
+
+    .trend-point {
+      fill: #12aeb5;
+      stroke: #fff;
+      stroke-width: 2;
+    }
+
+    .trend-label {
+      fill: var(--azul);
+      font-size: 11px;
+      font-weight: 800;
+      text-anchor: middle;
+    }
+
+    .trend-month {
+      fill: var(--muted);
+      font-size: 11px;
+      text-anchor: middle;
+    }
+
+    .trend-y {
+      fill: #627493;
+      font-size: 10px;
+      text-anchor: end;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid #e8dfcd;
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 640px;
+      font-size: 13px;
+    }
+
+    th,
+    td {
+      padding: 11px 12px;
+      border-bottom: 1px solid #eee5d7;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--azul);
+      background: #f8f4ea;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 4px 9px;
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .status.ok {
+      color: #0c6b3d;
+      background: #ddf7e8;
+    }
+
+    .status.no {
+      color: #9b1c1c;
+      background: #fde4e4;
+    }
+
+    .teacher-report-layout {
+      display: grid;
+      grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .teacher-report-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 680px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .teacher-report-btn {
+      display: grid;
+      grid-template-columns: 42px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #ece4d4;
+      border-radius: 12px;
+      background: #fff;
+      color: inherit;
+      text-align: left;
+      transition: background .18s, border-color .18s, transform .12s;
+    }
+
+    .teacher-report-btn:hover,
+    .teacher-report-btn.active {
+      background: var(--oro-luz);
+      border-color: var(--oro);
+    }
+
+    .teacher-report-btn:active {
+      transform: translateY(1px);
+    }
+
+    .teacher-report-detail {
+      display: grid;
+      gap: 14px;
+    }
+
+    .teacher-report-summary {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .summary-chip {
+      border: 1px solid #e8dfcd;
+      border-radius: 13px;
+      padding: 14px;
+      background: #fff;
+    }
+
+    .summary-chip span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .summary-chip strong {
+      color: var(--azul);
+      font-size: 26px;
+      line-height: 1;
+    }
+
+    .asistencia-layout {
+      display: grid;
+      grid-template-columns: minmax(320px, 480px) minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .docente-card {
+      overflow: hidden;
+      padding: 0;
+    }
+
+    .docente-card-header {
+      background: linear-gradient(135deg, rgba(211,159,26,.17), rgba(255,255,255,.95));
+      padding: 20px;
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      border-bottom: 1px solid var(--linea);
+    }
+
+    .docente-card-header .metric-icon {
+      width: 46px;
+      height: 46px;
+    }
+
+    .docente-card-body {
+      padding: 20px;
+    }
+
     #lista-docentes {
       list-style: none;
       display: flex;
       flex-direction: column;
       gap: 10px;
+      max-height: 560px;
+      overflow: auto;
+      padding-right: 4px;
     }
 
     .docente-item {
       display: flex;
       align-items: center;
-      gap: 14px;
-      padding: 16px 18px;
-      border: 1px solid rgba(179,28,28,.14);
-      border-radius: 16px;
-      cursor: pointer;
-      transition: background .18s, border-color .18s, transform .15s, box-shadow .18s;
+      gap: 13px;
+      padding: 14px 15px;
+      border: 1px solid rgba(183,28,28,.14);
+      border-radius: 13px;
       text-decoration: none;
       color: inherit;
       background: #fff;
+      transition: background .18s, border-color .18s, transform .15s;
     }
-    .docente-item:hover, .docente-item:focus {
+
+    .docente-item:hover,
+    .docente-item:focus {
       background: var(--oro-luz);
       border-color: var(--oro);
       transform: translateY(-1px);
-      box-shadow: 0 10px 20px rgba(179,28,28,.1);
       outline: none;
     }
-    .avatar {
-      width: 46px;
-      height: 46px;
-      border-radius: 50%;
-      background: var(--rojo);
-      display: grid;
-      place-items: center;
-      flex-shrink: 0;
-      font-family: 'Fraunces', serif;
-      font-size: 16px;
-      color: var(--oro-luz);
-      font-style: italic;
-      box-shadow: inset 0 0 0 3px rgba(255,255,255,.12);
-    }
-    .docente-nombre {
-      font-size: 15px;
-      font-weight: 600;
-    }
-    .docente-area {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 2px;
-    }
+
     .chevron {
       margin-left: auto;
       color: var(--muted);
-      opacity: .7;
+      opacity: .72;
     }
+
     .chevron svg {
       width: 18px;
       height: 18px;
@@ -258,91 +1050,606 @@
       padding: 24px 0;
       display: none;
     }
+
     .error-msg {
-      color: #b71c1c;
+      color: var(--rojo);
     }
 
     .spinner {
       width: 28px;
       height: 28px;
-      border: 3px solid rgba(179,28,28,.18);
+      border: 3px solid rgba(183,28,28,.18);
       border-top-color: var(--rojo);
       border-radius: 50%;
       animation: spin .7s linear infinite;
       margin: 0 auto 10px;
     }
+
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── FOOTER ── */
-    .footer-note {
-      margin-top: 30px;
-      font-size: 11px;
+    .guide-panel {
+      min-height: 220px;
+    }
+
+    .guide-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .guide-item {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 12px;
+      align-items: start;
+      padding: 13px;
+      border: 1px solid #eee5d7;
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .guide-num {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: var(--rojo);
+      color: #fff;
+      font-weight: 800;
+    }
+
+    .guide-item strong {
+      color: var(--azul);
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .guide-item span {
       color: var(--muted);
-      text-align: center;
-      opacity: .8;
-      max-width: 520px;
-      line-height: 1.6;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .print-header {
+      display: none;
+    }
+
+    @media (max-width: 1180px) {
+      .metric-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .dashboard-grid,
+      .lower-grid,
+      .monthly-summary,
+      .indicators-grid,
+      .teacher-report-layout,
+      .asistencia-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .monthly-stats {
+        border-right: 0;
+        border-bottom: 1px solid #dce3ee;
+        padding-right: 0;
+        padding-bottom: 16px;
+      }
+    }
+
+    @media (max-width: 780px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+        height: auto;
+        padding: 16px;
+      }
+
+      .brand {
+        padding-bottom: 12px;
+      }
+
+      .nav {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .sidebar-foot {
+        display: none;
+      }
+
+      .main {
+        padding: 18px 14px 34px;
+      }
+
+      .topbar {
+        flex-direction: column;
+      }
+
+      .toolbar {
+        width: 100%;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        justify-content: stretch;
+        align-items: stretch;
+      }
+
+      .search,
+      .search input,
+      .control,
+      .icon-btn,
+      .primary-btn {
+        width: 100%;
+      }
+
+      .toolbar .control,
+      .toolbar .search,
+      .icon-btn,
+      .primary-btn {
+        grid-column: 1 / -1;
+      }
+
+      .icon-btn,
+      .primary-btn {
+        min-height: 44px;
+        padding-inline: 10px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .icon-btn svg,
+      .primary-btn svg {
+        flex: 0 0 auto;
+      }
+
+      .metric-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .teacher-report-summary {
+        grid-template-columns: 1fr;
+      }
+
+      .calendar-cell {
+        min-height: 70px;
+        padding: 5px;
+      }
+
+      .event-pill {
+        font-size: 10px;
+        padding: 2px 4px;
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff;
+      }
+
+      .sidebar,
+      .toolbar,
+      .nav,
+      .asistencia-layout,
+      .month-btn {
+        display: none !important;
+      }
+
+      .app {
+        display: block;
+      }
+
+      .main {
+        padding: 0;
+      }
+
+      .view {
+        display: none !important;
+      }
+
+      #view-reporte {
+        display: block !important;
+      }
+
+      .topbar {
+        margin-bottom: 14px;
+      }
+
+      .print-header {
+        display: block;
+        text-align: center;
+        margin-bottom: 10px;
+        color: #222;
+      }
+
+      .metric-card,
+      .panel {
+        box-shadow: none;
+        break-inside: avoid;
+      }
+
+      .dashboard-grid,
+      .lower-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24"><path d="M12 3 2 8l10 5 10-5-10-5Z"/><path d="m4 10 8 4 8-4"/><path d="M6 12v5c2 2 10 2 12 0v-5"/></svg>
+      </div>
+      <div>
+        <div class="brand-title">AIP El Dorado</div>
+        <div class="brand-sub">Registro docente</div>
+      </div>
+    </div>
 
-<header>
-  <div class="ie-badge">Aula de Innovación Pedagógica</div>
-  <h1>I.E. El Dorado 3073</h1>
-  <p>Registro de uso del AIP · Ciclo 2026</p>
-</header>
+    <nav class="nav" aria-label="Secciones">
+      <button class="nav-item active" type="button" data-view="reporte">
+        <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-7"/></svg>
+        Reporte
+      </button>
+      <button class="nav-item" type="button" data-view="asistencia">
+        <svg viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/><path d="m9 16 2 2 4-5"/></svg>
+        Asistencia
+      </button>
+      <button class="nav-item" type="button" data-view="docente">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M8 21h8"/></svg>
+        Por docente
+      </button>
+    </nav>
 
-<div class="card">
-  <div class="card-header">
-    <div class="card-icon">
-      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    <div class="sidebar-foot">
+      Ano escolar
+      <strong id="sidebar-year">2026</strong>
+      Datos tomados de la hoja publicada del registro AIP.
     </div>
-    <div>
-      <div class="card-title">Seleccionar docente</div>
-      <div class="card-sub">Toca tu nombre para continuar</div>
+  </aside>
+
+  <main class="main">
+    <div class="print-header">
+      <strong>I.E. El Dorado 3073</strong><br>
+      Reporte de asistencia docente al Aula de Innovacion Pedagogica
     </div>
-  </div>
-  <div class="card-body">
-    <div class="search-wrap">
-      <span class="search-icon">
-        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      </span>
-      <input id="search-input" type="text" placeholder="Buscar docente…" autocomplete="off" />
-    </div>
-    <div class="loading-msg" id="loading-msg"><div class="spinner"></div>Cargando docentes…</div>
-    <div class="error-msg" id="error-msg"></div>
-    <ul id="lista-docentes"></ul>
-    <div class="empty-msg" id="empty-msg">No se encontró ningún docente con ese nombre.</div>
-  </div>
+
+    <section id="view-reporte" class="view active">
+      <div class="topbar">
+        <div>
+          <div class="page-kicker">Aula de Innovacion Pedagogica</div>
+          <h1>Reporte de Asistencia Docente</h1>
+          <p class="page-subtitle">Resumen para direccion y subdireccion, calculado desde el registro de uso del AIP.</p>
+        </div>
+        <div class="toolbar">
+          <select class="control" id="year-select" aria-label="Ano escolar"></select>
+          <select class="control" id="month-select" aria-label="Mes del reporte"></select>
+          <select class="control" id="bimester-select" aria-label="Bimestre del reporte"></select>
+          <div class="search">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input id="report-search" type="search" placeholder="Buscar docente..." autocomplete="off" />
+          </div>
+          <button class="icon-btn" type="button" id="print-btn">
+            <svg viewBox="0 0 24 24"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+            Imprimir
+          </button>
+          <button class="primary-btn" type="button" id="export-btn">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+            Exportar CSV
+          </button>
+        </div>
+      </div>
+
+      <div class="loading-msg" id="report-loading"><div class="spinner"></div>Cargando reporte...</div>
+      <div class="error-msg" id="report-error"></div>
+
+      <div id="report-content">
+        <div class="metric-grid">
+          <article class="metric-card">
+            <div class="metric-icon red">
+              <svg viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/><path d="m9 16 2 2 4-5"/></svg>
+            </div>
+            <div>
+              <div class="metric-label">Dias con uso del mes</div>
+              <div class="metric-value" id="metric-month">0</div>
+              <div class="metric-note" id="metric-month-note">Sin datos</div>
+            </div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-icon gold">
+              <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-7"/></svg>
+            </div>
+            <div>
+              <div class="metric-label">Dias con uso del ano</div>
+              <div class="metric-value" id="metric-year">0</div>
+              <div class="metric-note" id="metric-year-note">Ano escolar</div>
+            </div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-icon green">
+              <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div>
+              <div class="metric-label">Docentes registrados</div>
+              <div class="metric-value" id="metric-teachers">0</div>
+              <div class="metric-note">Activos en el registro</div>
+            </div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-icon cyan">
+              <svg viewBox="0 0 24 24"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg>
+            </div>
+            <div>
+              <div class="metric-label">Tasa de asistencia</div>
+              <div class="metric-value" id="metric-rate">0%</div>
+              <div class="metric-note" id="metric-rate-note">Dias con uso / dias programados</div>
+            </div>
+          </article>
+        </div>
+
+        <div class="dashboard-grid">
+          <section class="panel">
+            <div class="panel-header">
+              <div class="section-title">
+                <span class="section-icon"><svg viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/></svg></span>
+                Calendario de asistencia
+              </div>
+              <span class="muted-small" id="calendar-help">Mes seleccionado</span>
+            </div>
+            <div class="calendar-head">
+              <button class="month-btn" type="button" id="prev-month" aria-label="Mes anterior">
+                <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+              </button>
+              <div class="calendar-title" id="calendar-title">-</div>
+              <button class="month-btn" type="button" id="next-month" aria-label="Mes siguiente">
+                <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
+            </div>
+            <div class="calendar" id="calendar-grid"></div>
+          </section>
+
+          <aside>
+            <section class="panel">
+              <div class="panel-header">
+                <div class="section-title">
+                  <span class="section-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span>
+                  Docentes
+                </div>
+                <span class="muted-small">Dias asistidos</span>
+              </div>
+              <div class="teacher-list" id="teacher-ranking"></div>
+            </section>
+          </aside>
+        </div>
+
+        <div class="lower-grid">
+          <section class="panel">
+            <div class="panel-header">
+              <div class="section-title">
+                <span class="section-icon"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/></svg></span>
+                Resumen mensual
+              </div>
+              <span class="muted-small" id="monthly-help">Asistencias por mes</span>
+            </div>
+            <div class="monthly-summary">
+              <div class="monthly-stats" id="monthly-stats"></div>
+              <div class="chart-area">
+                <div class="chart-title">Dias de asistencia por mes</div>
+                <div class="bar-chart" id="monthly-chart"></div>
+                <div class="chart-legend" id="monthly-legend"></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <div class="section-title">
+                <span class="section-icon"><svg viewBox="0 0 24 24"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-6"/></svg></span>
+                Indicadores
+              </div>
+              <span class="muted-small">Ano escolar y ultimos meses</span>
+            </div>
+            <div class="indicators-grid">
+              <article class="indicator-card">
+                <div class="indicator-title">Asistencia vs. No asistencia</div>
+                <div class="indicator-subtitle" id="donut-subtitle">Ano escolar</div>
+                <div class="indicator-subtitle" id="bimester-range"></div>
+                <div class="donut-wrap">
+                  <div class="donut" id="attendance-donut" style="--asistencia-deg: 0deg">
+                    <div class="donut-center" id="donut-center">0%<span>Asistencia</span></div>
+                  </div>
+                </div>
+                <div class="donut-legend" id="donut-legend"></div>
+              </article>
+
+              <article class="indicator-card">
+                <div class="indicator-title">Tendencia de asistencia</div>
+                <div class="indicator-subtitle">Ultimos 6 meses</div>
+                <div class="trend-chart" id="trend-chart"></div>
+              </article>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-asistencia" class="view">
+      <div class="topbar">
+        <div>
+          <div class="page-kicker">Registro de uso del AIP</div>
+          <h1>Asistencia de docentes</h1>
+          <p class="page-subtitle">Selecciona tu nombre para validar el uso del Aula de Innovacion Pedagogica y registrar firma.</p>
+        </div>
+      </div>
+
+      <div class="asistencia-layout">
+        <section class="panel docente-card">
+          <div class="docente-card-header">
+            <div class="metric-icon red">
+              <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div>
+              <div class="section-title">Seleccionar docente</div>
+              <div class="muted-small">Toca tu nombre para continuar</div>
+            </div>
+          </div>
+          <div class="docente-card-body">
+            <div class="search" style="margin-bottom:14px;">
+              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input id="search-input" type="search" placeholder="Buscar docente..." autocomplete="off" />
+            </div>
+            <div class="loading-msg" id="loading-msg"><div class="spinner"></div>Cargando docentes...</div>
+            <div class="error-msg" id="error-msg"></div>
+            <ul id="lista-docentes"></ul>
+            <div class="empty-msg" id="empty-msg">No se encontro ningun docente con ese nombre.</div>
+          </div>
+        </section>
+
+        <section class="panel guide-panel">
+          <div class="panel-header">
+            <div class="section-title">
+              <span class="section-icon"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></span>
+              Flujo de validacion
+            </div>
+          </div>
+          <div class="guide-list">
+            <div class="guide-item">
+              <div class="guide-num">1</div>
+              <div><strong>Seleccionar docente</strong><span>El docente ingresa desde esta lista generada con la hoja de registro.</span></div>
+            </div>
+            <div class="guide-item">
+              <div class="guide-num">2</div>
+              <div><strong>Buscar fecha</strong><span>La aplicacion ubica la sesion programada para ese docente y fecha.</span></div>
+            </div>
+            <div class="guide-item">
+              <div class="guide-num">3</div>
+              <div><strong>Firmar y enviar</strong><span>La firma y las observaciones se guardan mediante el Apps Script configurado.</span></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section id="view-docente" class="view">
+      <div class="topbar">
+        <div>
+          <div class="page-kicker">Reporte individual</div>
+          <h1>Reporte por docente</h1>
+          <p class="page-subtitle">Consulta los dias en que cada docente asistio al Aula de Innovacion Pedagogica.</p>
+        </div>
+      </div>
+
+      <div class="teacher-report-layout">
+        <section class="panel">
+          <div class="panel-header">
+            <div class="section-title">
+              <span class="section-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span>
+              Docentes
+            </div>
+          </div>
+          <div class="search" style="margin-bottom:14px;">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input id="teacher-report-search" type="search" placeholder="Buscar docente..." autocomplete="off" />
+          </div>
+          <div class="teacher-report-list" id="teacher-report-list"></div>
+        </section>
+
+        <section class="panel teacher-report-detail">
+          <div class="panel-header">
+            <div class="section-title">
+              <span class="section-icon"><svg viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/></svg></span>
+              <span id="teacher-detail-title">Selecciona un docente</span>
+            </div>
+            <span class="muted-small" id="teacher-detail-range">Ano escolar</span>
+          </div>
+          <div class="teacher-report-summary" id="teacher-report-summary"></div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Grado</th>
+                  <th>Hora</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody id="teacher-report-table"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
 </div>
-
-<div class="footer-note">Coordinador AIP · Acceso restringido por docente</div>
 
 <script src="config.js"></script>
 <script>
-  // ╔══════════════════════════════════════════════════════════╗
-  // ║  La lista de docentes se arma automáticamente leyendo la ║
-  // ║  columna DOCENTE del propio registro (CSV_URL). Así nunca ║
-  // ║  hay que mantener una lista aparte a mano.                ║
-  // ╚══════════════════════════════════════════════════════════╝
-
-  // Datos de respaldo solo para MODO_DEMO = true
   const DOCENTES_DEMO = [
-    { nombre: "Liz Silva Cerna", area: "Matemática" },
+    { nombre: 'Liz Silva Cerna', area: 'Matematica' },
+    { nombre: 'Carmen Rosa Escalante Loza', area: 'Matematica' },
+    { nombre: 'Karen Ordonez Sevillano', area: 'Ciencia y Tecnologia' },
+    { nombre: 'Jorge Luis Ramos Pachas', area: 'Comunicacion' },
   ];
 
-  // Columnas del CSV (0-index), igual que en registro.html
-  const COL = { AREA: 4, DOCENTE: 5 };
+  const ROWS_DEMO = [
+    ['FECHA','GRADO Y SECCION','HORA INICIO','HORA FINAL','AREA','DOCENTE','TEMA','PRODUCTO','RECURSO','N ALUMNOS','COMPETENCIA','CAPACIDAD','DESEMPENO','SESION','FIRMA','OBSERVACION'],
+    ['24/06/2026','4 B','9:25','10:10','Matematica','Liz Silva Cerna','Fracciones','','','31','','','','','firma','Sin observaciones'],
+    ['25/06/2026','5 C','8:40','9:25','Comunicacion','Jorge Luis Ramos Pachas','Lectura','','','28','','','','','firma',''],
+    ['01/07/2026','4 B','9:25','10:10','Matematica','Liz Silva Cerna','Adicion de fracciones','','','31','','','','','firma','Sin observaciones'],
+    ['02/07/2026','3 A','8:40','9:25','Matematica','Carmen Rosa Escalante Loza','Problemas','','','29','','','','','firma',''],
+    ['03/07/2026','5 B','9:25','10:10','Ciencia y Tecnologia','Karen Ordonez Sevillano','Indagacion','','','32','','','','','firma',''],
+    ['06/07/2026','2 D','9:25','10:10','','NO ASISTIO','','','','','','','','','',''],
+  ];
 
-  function initiales(nombre) {
-    const parts = nombre.trim().split(/\s+/);
-    return (parts[0][0] + (parts[1] ? parts[1][0] : '')).toUpperCase();
-  }
+  const COL = {
+    FECHA: 0,
+    GRADO: 1,
+    HORA_INICIO: 2,
+    HORA_FINAL: 3,
+    AREA: 4,
+    DOCENTE: 5,
+    FIRMA: 14,
+    OBSERVACION: 15,
+  };
 
-  // Parser carácter a carácter: respeta saltos de línea dentro de
-  // celdas con comillas (celdas multilínea). Dividir primero por '\n'
-  // rompe esas celdas y desalinea las columnas siguientes.
+  const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Setiembre','Octubre','Noviembre','Diciembre'];
+  const MONTHS_SHORT = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  const DAY_NAMES = ['Dom','Lun','Mar','Mie','Jue','Vie','Sab'];
+  const BIMESTERS = [
+    { id: 1, label: 'Primer bimestre', start: [2, 16], end: [4, 15] },
+    { id: 2, label: 'Segundo bimestre', start: [4, 25], end: [6, 24] },
+    { id: 3, label: 'Tercer bimestre', start: [7, 10], end: [9, 9] },
+    { id: 4, label: 'Cuarto bimestre', start: [9, 19], end: [11, 18] },
+  ];
+
+  let ALL_ROWS = [];
+  let REGISTROS = [];
+  let DOCENTES = [];
+  let currentYear = new Date().getFullYear();
+  let currentMonth = new Date().getMonth();
+  let currentBimester = 1;
+  let selectedTeacher = '';
+
+  const navItems = document.querySelectorAll('.nav-item');
+  const views = document.querySelectorAll('.view');
+  const yearSelect = document.getElementById('year-select');
+  const monthSelect = document.getElementById('month-select');
+  const bimesterSelect = document.getElementById('bimester-select');
+  const reportSearch = document.getElementById('report-search');
+  const teacherReportSearch = document.getElementById('teacher-report-search');
+  const lista = document.getElementById('lista-docentes');
+  const emptyMsg = document.getElementById('empty-msg');
+  const loadingMsg = document.getElementById('loading-msg');
+  const errorMsg = document.getElementById('error-msg');
+  const searchInput = document.getElementById('search-input');
+  const reportLoading = document.getElementById('report-loading');
+  const reportError = document.getElementById('report-error');
+  const reportContent = document.getElementById('report-content');
+
   function parseCSV(text) {
     const rows = [];
     let row = [];
@@ -371,6 +1678,7 @@
       }
       field += ch; i++;
     }
+
     if (field.length > 0 || row.length > 0) {
       row.push(field);
       rows.push(row);
@@ -381,14 +1689,76 @@
       .map(r => r.map(c => c.trim()));
   }
 
+  function parseFecha(value) {
+    const raw = (value || '').trim();
+    if (!raw) return null;
+
+    if (/^\d{4}-\d{1,2}-\d{1,2}$/.test(raw)) {
+      const [y, m, d] = raw.split('-').map(Number);
+      return new Date(y, m - 1, d);
+    }
+
+    const parts = raw.split('/');
+    if (parts.length === 3) {
+      const [d, m, y] = parts.map(Number);
+      if (y && m && d) return new Date(y, m - 1, d);
+    }
+
+    return null;
+  }
+
+  function fechaKey(date) {
+    return `${date.getFullYear()}-${zeroPad(date.getMonth() + 1)}-${zeroPad(date.getDate())}`;
+  }
+
+  function formatFecha(date) {
+    return `${zeroPad(date.getDate())}/${zeroPad(date.getMonth() + 1)}/${date.getFullYear()}`;
+  }
+
+  function zeroPad(n) {
+    return String(n).padStart(2, '0');
+  }
+
+  function normalizarTexto(value) {
+    return (value || '')
+      .trim()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase();
+  }
+
+  function esEncabezado(nombre) {
+    return /^docente$/i.test((nombre || '').trim());
+  }
+
+  function esNoAsistio(nombre) {
+    return /^no\s*asisti[oó]$/i.test((nombre || '').trim());
+  }
+
+  function esFilaExcluida(row) {
+    const grado = normalizarTexto(row[COL.GRADO]);
+    const nombre = (row[COL.DOCENTE] || '').trim();
+    const area = normalizarTexto(row[COL.AREA]);
+    if (esEncabezado(nombre)) return true;
+    if (!nombre && !area) return true;
+    return grado === 'recreo' || grado === 'mantenimiento';
+  }
+
+  function initiales(nombre) {
+    const parts = (nombre || '').trim().split(/\s+/).filter(Boolean);
+    if (parts.length === 0) return '--';
+    return (parts[0][0] + (parts[1] ? parts[1][0] : '')).toUpperCase();
+  }
+
   function extraerDocentes(rows) {
-    const mapa = new Map(); // nombre -> area
-    // rows[0] = encabezados, datos desde rows[1]
+    const mapa = new Map();
     for (let i = 1; i < rows.length; i++) {
       const row = rows[i];
       const nombre = (row[COL.DOCENTE] || '').trim();
       if (!nombre) continue;
-      if (/^no\s*asisti[oó]$/i.test(nombre)) continue;
+      if (esEncabezado(nombre)) continue;
+      if (esNoAsistio(nombre)) continue;
+      if (esFilaExcluida(row)) continue;
       if (!mapa.has(nombre)) {
         mapa.set(nombre, (row[COL.AREA] || '').trim());
       }
@@ -398,31 +1768,69 @@
       .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'));
   }
 
-  let DOCENTES = [];
+  function construirRegistros(rows) {
+    const registros = [];
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i];
+      if (esFilaExcluida(row)) continue;
 
-  const lista       = document.getElementById('lista-docentes');
-  const emptyMsg     = document.getElementById('empty-msg');
-  const loadingMsg   = document.getElementById('loading-msg');
-  const errorMsg     = document.getElementById('error-msg');
-  const searchInput  = document.getElementById('search-input');
+      const fecha = parseFecha(row[COL.FECHA]);
+      if (!fecha || Number.isNaN(fecha.getTime())) continue;
+
+      const nombre = (row[COL.DOCENTE] || '').trim();
+      const noAsistio = esNoAsistio(nombre);
+      const asistio = Boolean(nombre) && !noAsistio;
+
+      registros.push({
+        fecha,
+        key: fechaKey(fecha),
+        year: fecha.getFullYear(),
+        month: fecha.getMonth(),
+        grado: (row[COL.GRADO] || '').trim(),
+        horaInicio: (row[COL.HORA_INICIO] || '').trim(),
+        horaFinal: (row[COL.HORA_FINAL] || '').trim(),
+        area: (row[COL.AREA] || '').trim(),
+        docente: asistio ? nombre : 'No asistio',
+        docenteKey: asistio ? nombre : '',
+        asistio,
+        firma: (row[COL.FIRMA] || '').trim(),
+        observacion: (row[COL.OBSERVACION] || '').trim(),
+      });
+    }
+    return registros;
+  }
+
+  function setView(viewName, updateHash = true) {
+    navItems.forEach(btn => btn.classList.toggle('active', btn.dataset.view === viewName));
+    views.forEach(view => view.classList.toggle('active', view.id === `view-${viewName}`));
+    if (updateHash) {
+      history.replaceState(null, '', `#${viewName}`);
+    }
+  }
+
+  function viewFromHash() {
+    const hash = window.location.hash.replace('#', '').trim();
+    if (hash === 'asistencia') return 'asistencia';
+    if (hash === 'docente') return 'docente';
+    return 'reporte';
+  }
 
   function renderLista(filtro = '') {
     lista.innerHTML = '';
-    const filtrados = DOCENTES.filter(d =>
-      d.nombre.toLowerCase().includes(filtro.toLowerCase())
-    );
+    const needle = normalizarTexto(filtro);
+    const filtrados = DOCENTES.filter(d => normalizarTexto(d.nombre).includes(needle));
     emptyMsg.style.display = (filtrados.length === 0 && DOCENTES.length > 0) ? 'block' : 'none';
+
     filtrados.forEach(d => {
       const li = document.createElement('li');
-      const a  = document.createElement('a');
+      const a = document.createElement('a');
       a.className = 'docente-item';
       a.href = `registro.html?docente=${encodeURIComponent(d.nombre)}`;
       a.setAttribute('role', 'button');
       a.innerHTML = `
         <div class="avatar">${initiales(d.nombre)}</div>
         <div>
-          <div class="docente-nombre">${d.nombre}</div>
-          <div class="docente-area">${d.area || ''}</div>
+          <div class="teacher-name">${escapeHTML(d.nombre)}</div>
         </div>
         <span class="chevron"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
       `;
@@ -431,32 +1839,560 @@
     });
   }
 
-  async function cargarDocentes() {
+  function getBimesterDefinition(id = currentBimester, year = currentYear) {
+    const def = BIMESTERS.find(item => item.id === Number(id)) || BIMESTERS[0];
+    return {
+      ...def,
+      startDate: new Date(year, def.start[0], def.start[1]),
+      endDate: new Date(year, def.end[0], def.end[1]),
+    };
+  }
+
+  function inferBimesterFromMonth(year, month) {
+    const probe = new Date(year, month, 15);
+    const match = BIMESTERS.find(item => {
+      const def = getBimesterDefinition(item.id, year);
+      return isWithinDateRange(probe, def.startDate, def.endDate);
+    });
+    return match ? match.id : currentBimester;
+  }
+
+  function isWithinDateRange(date, startDate, endDate) {
+    const time = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
+    return time >= startDate.getTime() && time <= endDate.getTime();
+  }
+
+  function summarizeDays(records) {
+    const days = new Map();
+    records.forEach(record => {
+      if (!days.has(record.key)) {
+        days.set(record.key, {
+          key: record.key,
+          date: record.fecha,
+          total: 0,
+          attendedSlots: 0,
+          attendedTeachers: new Set(),
+        });
+      }
+      const day = days.get(record.key);
+      day.total += 1;
+      if (record.asistio) {
+        day.attendedSlots += 1;
+        day.attendedTeachers.add(record.docenteKey);
+      }
+    });
+
+    const list = Array.from(days.values());
+    const scheduledDays = list.length;
+    const attendedDays = list.filter(day => day.attendedSlots > 0).length;
+    const noAttendanceDays = Math.max(0, scheduledDays - attendedDays);
+    const partialDays = list.filter(day => day.attendedSlots > 0 && day.attendedSlots < day.total).length;
+    const rate = scheduledDays ? Math.round((attendedDays / scheduledDays) * 100) : 0;
+
+    return { list, scheduledDays, attendedDays, noAttendanceDays, partialDays, rate };
+  }
+
+  function popularSelects() {
+    const years = Array.from(new Set(REGISTROS.map(r => r.year))).sort((a, b) => b - a);
+    const fallbackYear = years[0] || currentYear;
+    currentYear = years.includes(currentYear) ? currentYear : fallbackYear;
+
+    const monthsWithData = REGISTROS
+      .filter(r => r.year === currentYear)
+      .map(r => r.month);
+    currentMonth = monthsWithData.length ? Math.max(...monthsWithData) : currentMonth;
+    currentBimester = inferBimesterFromMonth(currentYear, currentMonth);
+
+    yearSelect.innerHTML = '';
+    (years.length ? years : [currentYear]).forEach(year => {
+      const opt = document.createElement('option');
+      opt.value = year;
+      opt.textContent = `Ano escolar ${year}`;
+      opt.selected = year === currentYear;
+      yearSelect.appendChild(opt);
+    });
+
+    monthSelect.innerHTML = '';
+    MONTHS.forEach((month, idx) => {
+      const opt = document.createElement('option');
+      opt.value = idx;
+      opt.textContent = month;
+      opt.selected = idx === currentMonth;
+      monthSelect.appendChild(opt);
+    });
+
+    bimesterSelect.innerHTML = '';
+    BIMESTERS.forEach(bimester => {
+      const opt = document.createElement('option');
+      opt.value = bimester.id;
+      opt.textContent = bimester.label;
+      opt.selected = bimester.id === currentBimester;
+      bimesterSelect.appendChild(opt);
+    });
+
+    document.getElementById('sidebar-year').textContent = currentYear;
+  }
+
+  function getFilteredMonthRecords() {
+    const needle = normalizarTexto(reportSearch.value);
+    return REGISTROS.filter(r => {
+      const matchesPeriod = r.year === currentYear && r.month === currentMonth;
+      const matchesSearch = !needle || normalizarTexto(r.docente).includes(needle);
+      return matchesPeriod && matchesSearch;
+    });
+  }
+
+  function renderReporte() {
+    const yearRecords = REGISTROS.filter(r => r.year === currentYear);
+    const monthRecords = getFilteredMonthRecords();
+    const monthAllRecords = REGISTROS.filter(r => r.year === currentYear && r.month === currentMonth);
+    const monthDaySummary = summarizeDays(monthAllRecords);
+    const yearDaySummary = summarizeDays(yearRecords);
+
+    document.getElementById('metric-month').textContent = monthDaySummary.attendedDays;
+    document.getElementById('metric-month-note').textContent = `${MONTHS[currentMonth]} ${currentYear}`;
+    document.getElementById('metric-year').textContent = yearDaySummary.attendedDays;
+    document.getElementById('metric-year-note').textContent = `Dias con uso en ${currentYear}`;
+    document.getElementById('metric-teachers').textContent = DOCENTES.length;
+    document.getElementById('metric-rate').textContent = `${monthDaySummary.rate}%`;
+    document.getElementById('metric-rate-note').textContent =
+      `${monthDaySummary.attendedDays} dias con uso de ${monthDaySummary.scheduledDays} dias programados` +
+      (monthDaySummary.partialDays ? ` (${monthDaySummary.partialDays} parciales)` : '');
+    document.getElementById('calendar-title').textContent = `${MONTHS[currentMonth]} ${currentYear}`;
+    document.getElementById('calendar-help').textContent = `${monthDaySummary.attendedDays} dias con uso del AIP`;
+
+    renderCalendario(monthRecords);
+    renderRanking(monthRecords);
+    renderMonthlyChart(yearRecords);
+    renderIndicators(yearRecords);
+    renderTeacherReport();
+  }
+
+  function renderCalendario(records) {
+    const grid = document.getElementById('calendar-grid');
+    grid.innerHTML = '';
+    DAY_NAMES.forEach(name => {
+      const el = document.createElement('div');
+      el.className = 'calendar-day-name';
+      el.textContent = name.toUpperCase();
+      grid.appendChild(el);
+    });
+
+    const first = new Date(currentYear, currentMonth, 1);
+    const start = new Date(currentYear, currentMonth, 1 - first.getDay());
+    const byDay = new Map();
+    records.filter(r => r.asistio).forEach(r => {
+      if (!byDay.has(r.key)) byDay.set(r.key, []);
+      byDay.get(r.key).push(r);
+    });
+
+    for (let i = 0; i < 42; i++) {
+      const date = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
+      const key = fechaKey(date);
+      const items = byDay.get(key) || [];
+      const cell = document.createElement('div');
+      cell.className = `calendar-cell${date.getMonth() === currentMonth ? '' : ' out'}`;
+      const shown = items.slice(0, 3);
+      cell.innerHTML = `<div class="day-number">${date.getDate()}</div>`;
+      shown.forEach(item => {
+        const pill = document.createElement('span');
+        pill.className = 'event-pill';
+        pill.title = item.docente;
+        pill.textContent = nombreCorto(item.docente);
+        cell.appendChild(pill);
+      });
+      if (items.length > shown.length) {
+        const more = document.createElement('div');
+        more.className = 'event-more';
+        more.textContent = `+${items.length - shown.length} mas`;
+        cell.appendChild(more);
+      }
+      grid.appendChild(cell);
+    }
+  }
+
+  function renderRanking(records) {
+    const box = document.getElementById('teacher-ranking');
+    const counts = new Map();
+    records.filter(r => r.asistio).forEach(r => {
+      if (!counts.has(r.docenteKey)) {
+        counts.set(r.docenteKey, { nombre: r.docenteKey, area: r.area, days: new Set() });
+      }
+      counts.get(r.docenteKey).days.add(r.key);
+    });
+
+    const rows = Array.from(counts.values())
+      .map(item => ({ ...item, total: item.days.size }))
+      .sort((a, b) => b.total - a.total || a.nombre.localeCompare(b.nombre, 'es'));
+
+    box.innerHTML = '';
+    if (!rows.length) {
+      box.innerHTML = '<div class="muted-small">No hay asistencias para el periodo seleccionado.</div>';
+      return;
+    }
+
+    rows.slice(0, 8).forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'teacher-row';
+      div.innerHTML = `
+        <div class="avatar">${initiales(item.nombre)}</div>
+        <div>
+          <div class="teacher-name">${escapeHTML(item.nombre)}</div>
+        </div>
+        <div class="teacher-count">${item.total} ${item.total === 1 ? 'dia' : 'dias'}</div>
+      `;
+      box.appendChild(div);
+    });
+  }
+
+  function renderTeacherReport() {
+    const list = document.getElementById('teacher-report-list');
+    const needle = normalizarTexto(teacherReportSearch.value);
+    const rows = DOCENTES
+      .filter(d => !needle || normalizarTexto(d.nombre).includes(needle))
+      .map(d => {
+        const records = REGISTROS.filter(r => r.year === currentYear && r.docenteKey === d.nombre && r.asistio);
+        return { ...d, records, days: new Set(records.map(r => r.key)).size };
+      });
+
+    if (!selectedTeacher && rows.length) selectedTeacher = rows[0].nombre;
+    if (selectedTeacher && !DOCENTES.some(d => d.nombre === selectedTeacher)) {
+      selectedTeacher = rows[0] ? rows[0].nombre : '';
+    }
+
+    list.innerHTML = '';
+    if (!rows.length) {
+      list.innerHTML = '<div class="muted-small">No hay docentes para mostrar.</div>';
+      renderTeacherDetail(null);
+      return;
+    }
+
+    rows.forEach(item => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = `teacher-report-btn${item.nombre === selectedTeacher ? ' active' : ''}`;
+      btn.innerHTML = `
+        <div class="avatar">${initiales(item.nombre)}</div>
+        <div>
+          <div class="teacher-name">${escapeHTML(item.nombre)}</div>
+        </div>
+        <div class="teacher-count">${item.days} ${item.days === 1 ? 'dia' : 'dias'}</div>
+      `;
+      btn.addEventListener('click', () => {
+        selectedTeacher = item.nombre;
+        renderTeacherReport();
+      });
+      list.appendChild(btn);
+    });
+
+    renderTeacherDetail(selectedTeacher);
+  }
+
+  function renderTeacherDetail(nombre) {
+    const title = document.getElementById('teacher-detail-title');
+    const range = document.getElementById('teacher-detail-range');
+    const summary = document.getElementById('teacher-report-summary');
+    const tbody = document.getElementById('teacher-report-table');
+
+    if (!nombre) {
+      title.textContent = 'Selecciona un docente';
+      range.textContent = `Ano escolar ${currentYear}`;
+      summary.innerHTML = '';
+      tbody.innerHTML = '<tr><td colspan="4">No hay datos disponibles.</td></tr>';
+      return;
+    }
+
+    const records = REGISTROS
+      .filter(r => r.year === currentYear && r.docenteKey === nombre && r.asistio)
+      .sort((a, b) => a.fecha - b.fecha || a.horaInicio.localeCompare(b.horaInicio));
+    const dayCount = new Set(records.map(r => r.key)).size;
+    const last = records[records.length - 1];
+
+    title.textContent = nombre;
+    range.textContent = `Ano escolar ${currentYear}`;
+    summary.innerHTML = `
+      <div class="summary-chip"><span>Dias asistidos</span><strong>${dayCount}</strong></div>
+      <div class="summary-chip"><span>Sesiones registradas</span><strong>${records.length}</strong></div>
+      <div class="summary-chip"><span>Ultima asistencia</span><strong>${last ? formatFecha(last.fecha) : '-'}</strong></div>
+    `;
+
+    if (!records.length) {
+      tbody.innerHTML = '<tr><td colspan="4">Este docente no registra asistencia en el ano seleccionado.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = records.map(r => `
+      <tr>
+        <td>${formatFecha(r.fecha)}</td>
+        <td>${escapeHTML(r.grado || '-')}</td>
+        <td>${escapeHTML([r.horaInicio, r.horaFinal].filter(Boolean).join(' - ') || '-')}</td>
+        <td><span class="status ok">Asistio</span></td>
+      </tr>
+    `).join('');
+  }
+
+  function renderMonthlyChart(yearRecords) {
+    const chart = document.getElementById('monthly-chart');
+    const stats = document.getElementById('monthly-stats');
+    const legend = document.getElementById('monthly-legend');
+    const counts = Array.from({ length: 12 }, () => 0);
+    for (let month = 0; month < 12; month++) {
+      const monthSummary = summarizeDays(yearRecords.filter(r => r.month === month));
+      counts[month] = monthSummary.attendedDays;
+    }
+    const max = Math.max(...counts, 1);
+    const previousMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+    const previousYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+    const previousTotal = summarizeDays(REGISTROS.filter(r => r.year === previousYear && r.month === previousMonth)).attendedDays;
+    const currentTotal = counts[currentMonth] || 0;
+
+    stats.innerHTML = `
+      <div class="month-stat">
+        <span class="month-dot"></span>
+        <div>
+          <div class="month-stat-label">${MONTHS[previousMonth]}: asistieron</div>
+          <div class="month-stat-number">${previousTotal}<span>dias del mes</span></div>
+        </div>
+      </div>
+      <div class="month-stat">
+        <span class="month-dot current"></span>
+        <div>
+          <div class="month-stat-label">${MONTHS[currentMonth]}: estan asistiendo</div>
+          <div class="month-stat-number">${currentTotal}<span>dias del mes</span></div>
+        </div>
+      </div>
+    `;
+
+    chart.innerHTML = '';
+
+    counts.forEach((total, idx) => {
+      const item = document.createElement('div');
+      item.className = 'bar-item';
+      const barClass = idx === currentMonth ? 'current' : (previousYear === currentYear && idx === previousMonth ? 'previous' : '');
+      item.innerHTML = `
+        <div class="bar ${barClass}" style="height:${Math.max(4, (total / max) * 160)}px"><strong>${total}</strong></div>
+        <div class="bar-label">${MONTHS_SHORT[idx]}</div>
+      `;
+      chart.appendChild(item);
+    });
+
+    document.getElementById('monthly-help').textContent = `Total anual: ${counts.reduce((a, b) => a + b, 0)}`;
+    legend.innerHTML = `
+      <span><i class="legend-dot previous"></i>${MONTHS[previousMonth]} (${previousTotal})</span>
+      <span><i class="legend-dot current"></i>${MONTHS[currentMonth]} (${currentTotal})</span>
+    `;
+  }
+
+  function renderIndicators(yearRecords) {
+    const bimester = getBimesterDefinition();
+    const bimesterRecords = yearRecords.filter(r => isWithinDateRange(r.fecha, bimester.startDate, bimester.endDate));
+    const summary = summarizeDays(bimesterRecords);
+    const rate = summary.rate;
+    const degrees = summary.scheduledDays ? (summary.attendedDays / summary.scheduledDays) * 360 : 0;
+
+    document.getElementById('donut-subtitle').textContent = bimester.label;
+    document.getElementById('bimester-range').textContent = `${formatFecha(bimester.startDate)} al ${formatFecha(bimester.endDate)}`;
+    document.getElementById('attendance-donut').style.setProperty('--asistencia-deg', `${degrees}deg`);
+    document.getElementById('donut-center').innerHTML = `${rate}%<span>Asistencia</span>`;
+    document.getElementById('donut-legend').innerHTML = `
+      <div><span class="legend-dot attendance"></span>Asistencia<strong>${rate}% (${summary.attendedDays} dias)</strong></div>
+      <div><span class="legend-dot absence"></span>No asistencia<strong>${100 - rate}% (${summary.noAttendanceDays} dias)</strong></div>
+    `;
+
+    renderTrendChart(yearRecords);
+  }
+
+  function renderTrendChart(yearRecords) {
+    const chart = document.getElementById('trend-chart');
+    const months = [];
+    for (let offset = 5; offset >= 0; offset--) {
+      const date = new Date(currentYear, currentMonth - offset, 1);
+      months.push({ year: date.getFullYear(), month: date.getMonth() });
+    }
+
+    const points = months.map(item => ({
+      ...item,
+      label: MONTHS_SHORT[item.month],
+      total: summarizeDays(REGISTROS.filter(r => r.year === item.year && r.month === item.month)).attendedDays,
+    }));
+
+    const width = 360;
+    const height = 190;
+    const left = 34;
+    const right = 14;
+    const top = 22;
+    const bottom = 34;
+    const plotW = width - left - right;
+    const plotH = height - top - bottom;
+    const max = Math.max(5, ...points.map(p => p.total));
+    const step = points.length > 1 ? plotW / (points.length - 1) : plotW;
+
+    const coords = points.map((p, idx) => {
+      const x = left + idx * step;
+      const y = top + plotH - ((p.total / max) * plotH);
+      return { ...p, x, y };
+    });
+
+    const line = coords.map(p => `${p.x},${p.y}`).join(' ');
+    const area = `${left},${top + plotH} ${line} ${left + plotW},${top + plotH}`;
+    const yTicks = [0, Math.ceil(max / 2), max];
+
+    chart.innerHTML = `
+      <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Tendencia de asistencia de los ultimos seis meses">
+        ${yTicks.map(t => {
+          const y = top + plotH - ((t / max) * plotH);
+          return `<line class="trend-grid" x1="${left}" y1="${y}" x2="${left + plotW}" y2="${y}"></line><text class="trend-y" x="${left - 8}" y="${y + 4}">${t}</text>`;
+        }).join('')}
+        <line class="trend-axis" x1="${left}" y1="${top + plotH}" x2="${left + plotW}" y2="${top + plotH}"></line>
+        <polygon class="trend-area" points="${area}"></polygon>
+        <polyline class="trend-line" points="${line}"></polyline>
+        ${coords.map(p => `
+          <circle class="trend-point" cx="${p.x}" cy="${p.y}" r="5"></circle>
+          <text class="trend-label" x="${p.x}" y="${p.y - 12}">${p.total}</text>
+          <text class="trend-month" x="${p.x}" y="${top + plotH + 24}">${p.label}</text>
+        `).join('')}
+      </svg>
+    `;
+  }
+
+  function nombreCorto(nombre) {
+    const parts = (nombre || '').trim().split(/\s+/);
+    if (parts.length <= 2) return nombre;
+    return `${parts[0]} ${parts[1]}`;
+  }
+
+  function exportarCSV() {
+    const records = getFilteredMonthRecords();
+    const header = ['Fecha','Docente','Grado','Area','Estado','Firma','Observacion'];
+    const lines = [header, ...records.map(r => [
+      formatFecha(r.fecha),
+      r.docente,
+      r.grado,
+      r.area,
+      r.asistio ? 'Asistio' : 'No asistio',
+      r.firma ? 'Si' : 'No',
+      r.observacion,
+    ])];
+    const csv = lines.map(cols => cols.map(csvCell).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `reporte_asistencia_aip_${currentYear}_${zeroPad(currentMonth + 1)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function csvCell(value) {
+    const text = String(value || '');
+    return `"${text.replace(/"/g, '""')}"`;
+  }
+
+  function escapeHTML(value) {
+    return String(value || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  async function cargarDatos() {
     loadingMsg.style.display = 'block';
+    reportLoading.style.display = 'block';
+    reportContent.style.display = 'none';
     errorMsg.style.display = 'none';
+    reportError.style.display = 'none';
 
     try {
       if (typeof MODO_DEMO !== 'undefined' && MODO_DEMO) {
-        await new Promise(r => setTimeout(r, 300));
+        await new Promise(r => setTimeout(r, 250));
+        ALL_ROWS = ROWS_DEMO;
         DOCENTES = DOCENTES_DEMO;
       } else {
         const resp = await fetch(`${CSV_URL}&t=${Date.now()}`);
         if (!resp.ok) throw new Error('No se pudo leer el registro.');
         const text = await resp.text();
-        const rows = parseCSV(text);
-        DOCENTES = extraerDocentes(rows);
+        ALL_ROWS = parseCSV(text);
+        DOCENTES = extraerDocentes(ALL_ROWS);
       }
-      loadingMsg.style.display = 'none';
+
+      REGISTROS = construirRegistros(ALL_ROWS);
+      popularSelects();
       renderLista(searchInput.value);
+      renderReporte();
+
+      loadingMsg.style.display = 'none';
+      reportLoading.style.display = 'none';
+      reportContent.style.display = 'block';
     } catch (e) {
       loadingMsg.style.display = 'none';
-      errorMsg.textContent = '⚠️ No se pudo cargar la lista de docentes. Verifica tu conexión.';
+      reportLoading.style.display = 'none';
+      errorMsg.textContent = 'No se pudo cargar la lista de docentes. Verifica tu conexion.';
+      reportError.textContent = 'No se pudo cargar el reporte. Verifica que el CSV publicado siga disponible.';
       errorMsg.style.display = 'block';
+      reportError.style.display = 'block';
     }
   }
 
+  navItems.forEach(btn => {
+    btn.addEventListener('click', () => setView(btn.dataset.view));
+  });
+  window.addEventListener('hashchange', () => setView(viewFromHash(), false));
+
   searchInput.addEventListener('input', e => renderLista(e.target.value));
-  cargarDocentes();
+  reportSearch.addEventListener('input', renderReporte);
+  teacherReportSearch.addEventListener('input', renderTeacherReport);
+  yearSelect.addEventListener('change', e => {
+    currentYear = Number(e.target.value);
+    currentBimester = inferBimesterFromMonth(currentYear, currentMonth);
+    bimesterSelect.value = String(currentBimester);
+    document.getElementById('sidebar-year').textContent = currentYear;
+    renderReporte();
+  });
+  monthSelect.addEventListener('change', e => {
+    currentMonth = Number(e.target.value);
+    currentBimester = inferBimesterFromMonth(currentYear, currentMonth);
+    bimesterSelect.value = String(currentBimester);
+    renderReporte();
+  });
+  bimesterSelect.addEventListener('change', e => {
+    currentBimester = Number(e.target.value);
+    renderReporte();
+  });
+  document.getElementById('prev-month').addEventListener('click', () => {
+    currentMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+    if (currentMonth === 11) currentYear -= 1;
+    syncPeriodControls();
+    renderReporte();
+  });
+  document.getElementById('next-month').addEventListener('click', () => {
+    currentMonth = currentMonth === 11 ? 0 : currentMonth + 1;
+    if (currentMonth === 0) currentYear += 1;
+    syncPeriodControls();
+    renderReporte();
+  });
+  document.getElementById('export-btn').addEventListener('click', exportarCSV);
+  document.getElementById('print-btn').addEventListener('click', () => window.print());
+
+  function syncPeriodControls() {
+    if (![...yearSelect.options].some(opt => Number(opt.value) === currentYear)) {
+      const opt = document.createElement('option');
+      opt.value = currentYear;
+      opt.textContent = `Ano escolar ${currentYear}`;
+      yearSelect.appendChild(opt);
+    }
+    yearSelect.value = String(currentYear);
+    monthSelect.value = String(currentMonth);
+    currentBimester = inferBimesterFromMonth(currentYear, currentMonth);
+    bimesterSelect.value = String(currentBimester);
+    document.getElementById('sidebar-year').textContent = currentYear;
+  }
+
+  setView(viewFromHash(), false);
+  cargarDatos();
 </script>
 </body>
 </html>
