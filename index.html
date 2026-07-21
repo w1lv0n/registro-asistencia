@@ -367,6 +367,160 @@
       margin-bottom: 16px;
     }
 
+    .panel-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .panel-expand {
+      height: 34px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: #f0f4ff;
+      color: var(--azul-2);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border: 1px solid #dce6ff;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .01em;
+      transition: background .15s, box-shadow .15s, transform .1s;
+      white-space: nowrap;
+    }
+
+    .panel-expand svg {
+      width: 14px;
+      height: 14px;
+      flex: 0 0 auto;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .panel-expand:hover {
+      background: #e2eaff;
+      box-shadow: 0 4px 12px rgba(23,79,156,.14);
+      transform: translateY(-1px);
+    }
+
+    .panel-expand:active {
+      transform: translateY(0);
+    }
+
+    .panel-expand.is-expanded {
+      background: var(--azul-2);
+      color: #fff;
+      border-color: var(--azul-2);
+    }
+
+    .panel-expand.is-expanded:hover {
+      background: var(--azul);
+      border-color: var(--azul);
+      box-shadow: 0 4px 12px rgba(13,47,99,.22);
+    }
+
+    /* Overlay backdrop */
+    .panel-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10,20,50,.38);
+      backdrop-filter: blur(3px);
+      z-index: 55;
+      animation: overlayIn .2s ease;
+    }
+
+    .panel-overlay.active {
+      display: block;
+    }
+
+    @keyframes overlayIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    @keyframes panelExpand {
+      from { opacity: 0; transform: translate(-50%,-48%) scale(.97); }
+      to   { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+    }
+
+    .panel.expanded {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 60;
+      width: min(98vw, 1280px);
+      max-height: 92vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      box-shadow: 0 40px 100px rgba(10,20,60,.28), 0 0 0 1px rgba(13,47,99,.07);
+      border-radius: 22px;
+      padding: 0;
+      animation: panelExpand .22s cubic-bezier(.2,.9,.3,1);
+    }
+
+    .panel.expanded .panel-header {
+      padding: 22px 28px 18px;
+      border-bottom: 1px solid var(--linea);
+      background: #fff;
+      z-index: 2;
+      margin-bottom: 0;
+      border-radius: 22px 22px 0 0;
+      flex: 0 0 auto;
+    }
+
+    .panel.expanded .panel-expanded-body {
+      flex: 1 1 auto;
+      overflow: auto;
+      padding: 28px;
+    }
+
+    .panel.expanded .chart-area {
+      min-height: 460px;
+    }
+
+    .panel.expanded #monthly-chart-wrap {
+      height: 420px !important;
+    }
+
+    .panel.expanded .monthly-summary {
+      grid-template-columns: 240px 1fr;
+      gap: 36px;
+    }
+
+    .panel.expanded .trend-chart {
+      min-height: 400px;
+    }
+
+    .panel.expanded canvas {
+      width: 100% !important;
+    }
+
+    .panel.expanded .indicators-grid {
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 20px;
+    }
+
+    .panel.expanded .donut {
+      width: 200px;
+    }
+
+    .panel.expanded .donut::after {
+      width: 118px;
+    }
+
+    .panel.expanded .donut-center {
+      font-size: 36px;
+    }
+
     .section-title {
       display: flex;
       align-items: center;
@@ -614,56 +768,10 @@
       margin-bottom: 8px;
     }
 
-    .bar-chart {
-      height: 210px;
-      display: flex;
-      align-items: end;
-      gap: 10px;
-      padding: 24px 4px 0;
-      border-bottom: 1px solid #dce3ee;
-      background-image: linear-gradient(to top, #e8edf5 1px, transparent 1px);
-      background-size: 100% 42px;
-    }
-
-    .bar-item {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 7px;
-      height: 100%;
-      justify-content: flex-end;
-    }
-
-    .bar {
-      width: min(30px, 70%);
-      min-height: 4px;
-      border-radius: 9px 9px 0 0;
-      background: #cfe0fb;
+    #monthly-chart-wrap {
       position: relative;
-    }
-
-    .bar.previous {
-      background: #0d56c5;
-    }
-
-    .bar.current {
-      background: #15bf62;
-    }
-
-    .bar strong {
-      position: absolute;
-      left: 50%;
-      top: -20px;
-      transform: translateX(-50%);
-      color: var(--azul);
-      font-size: 12px;
-    }
-
-    .bar-label {
-      color: var(--muted);
-      font-size: 11px;
+      height: 210px;
+      transition: height .3s ease;
     }
 
     .chart-legend {
@@ -692,7 +800,7 @@
 
     .indicators-grid {
       display: grid;
-      grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 12px;
     }
 
@@ -1344,7 +1452,7 @@
     </nav>
 
     <div class="sidebar-foot">
-      Año escolar
+      Ano escolar
       <strong id="sidebar-year">2026</strong>
       Datos tomados de la hoja publicada del registro AIP.
     </div>
@@ -1364,7 +1472,7 @@
           <p class="page-subtitle">Resumen para direccion y subdireccion, calculado desde el registro de uso del AIP.</p>
         </div>
         <div class="toolbar">
-          <select class="control" id="year-select" aria-label="Año escolar"></select>
+          <select class="control" id="year-select" aria-label="Ano escolar"></select>
           <select class="control" id="month-select" aria-label="Mes del reporte"></select>
           <select class="control" id="bimester-select" aria-label="Bimestre del reporte"></select>
           <div class="search">
@@ -1402,9 +1510,9 @@
               <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-7"/></svg>
             </div>
             <div>
-              <div class="metric-label">Dias con uso del año</div>
+              <div class="metric-label">Dias con uso del ano</div>
               <div class="metric-value" id="metric-year">0</div>
-              <div class="metric-note" id="metric-year-note">Año escolar</div>
+              <div class="metric-note" id="metric-year-note">Ano escolar</div>
             </div>
           </article>
           <article class="metric-card">
@@ -1457,12 +1565,18 @@
                   <span class="section-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span>
                   Docentes
                 </div>
-                <div style="display:flex;align-items:center;gap:8px">
+                <div class="panel-actions">
                   <span class="muted-small">Dias asistidos</span>
                   <button id="teacher-filter-btn" type="button" class="icon-btn" title="Mostrar top 8 / todos">Top 8</button>
+                  <button class="panel-expand" type="button" aria-label="Expandir docentes" title="Expandir docentes">
+                    <svg viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
+                    Expandir
+                  </button>
                 </div>
               </div>
-              <div class="teacher-list" id="teacher-ranking"></div>
+              <div class="panel-expanded-body" style="padding-top:0">
+                <div class="teacher-list" id="teacher-ranking"></div>
+              </div>
             </section>
           </aside>
         </div>
@@ -1474,14 +1588,24 @@
                 <span class="section-icon"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/></svg></span>
                 Resumen mensual
               </div>
-              <span class="muted-small" id="monthly-help">Asistencias por mes</span>
+              <div class="panel-actions">
+                <span class="muted-small" id="monthly-help">Asistencias por mes</span>
+                <button class="panel-expand" type="button" aria-label="Expandir resumen mensual" title="Expandir resumen mensual">
+                  <svg viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
+                  Expandir
+                </button>
+              </div>
             </div>
-            <div class="monthly-summary">
-              <div class="monthly-stats" id="monthly-stats"></div>
-              <div class="chart-area">
-                <div class="chart-title">Dias de asistencia por mes</div>
-                <div class="bar-chart" id="monthly-chart"></div>
-                <div class="chart-legend" id="monthly-legend"></div>
+            <div class="panel-expanded-body">
+              <div class="monthly-summary">
+                <div class="monthly-stats" id="monthly-stats"></div>
+                <div class="chart-area">
+                  <div class="chart-title">Dias de asistencia por mes</div>
+                  <div id="monthly-chart-wrap" style="position:relative; height:210px;">
+                    <canvas id="monthly-chart"></canvas>
+                  </div>
+                  <div class="chart-legend" id="monthly-legend"></div>
+                </div>
               </div>
             </div>
           </section>
@@ -1492,12 +1616,19 @@
                 <span class="section-icon"><svg viewBox="0 0 24 24"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-6"/></svg></span>
                 Indicadores
               </div>
-              <span class="muted-small">Año escolar y ultimos meses</span>
+              <div class="panel-actions">
+                <span class="muted-small">Ano escolar y ultimos meses</span>
+                <button class="panel-expand" type="button" aria-label="Expandir indicadores" title="Expandir indicadores">
+                  <svg viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
+                  Expandir
+                </button>
+              </div>
             </div>
+            <div class="panel-expanded-body">
             <div class="indicators-grid">
               <article class="indicator-card">
                 <div class="indicator-title">Asistencia vs. No asistencia</div>
-                <div class="indicator-subtitle" id="donut-subtitle">Año escolar</div>
+                <div class="indicator-subtitle" id="donut-subtitle">Ano escolar</div>
                 <div class="indicator-subtitle" id="bimester-range"></div>
                 <div class="donut-wrap">
                   <div class="donut" id="attendance-donut" style="--asistencia-deg: 0deg">
@@ -1512,6 +1643,7 @@
                 <div class="indicator-subtitle">Ultimos 6 meses</div>
                 <div class="trend-chart" id="trend-chart"></div>
               </article>
+            </div>
             </div>
           </section>
         </div>
@@ -1605,7 +1737,7 @@
               <span class="section-icon"><svg viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/></svg></span>
               <span id="teacher-detail-title">Selecciona un docente</span>
             </div>
-            <span class="muted-small" id="teacher-detail-range">Año escolar</span>
+            <span class="muted-small" id="teacher-detail-range">Ano escolar</span>
           </div>
           <div class="teacher-report-summary" id="teacher-report-summary"></div>
           <div class="table-wrap">
@@ -1627,10 +1759,13 @@
   </main>
 </div>
 
+<div class="panel-overlay" id="panel-overlay"></div>
+
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
 <script>
   let teachersChart = null;
+  let monthlyChart = null;
 
   const DOCENTES_DEMO = [
     { nombre: 'Liz Silva Cerna', area: 'Matematica' },
@@ -1951,7 +2086,7 @@
     (years.length ? years : [currentYear]).forEach(year => {
       const opt = document.createElement('option');
       opt.value = year;
-      opt.textContent = `Año escolar ${year}`;
+      opt.textContent = `Ano escolar ${year}`;
       opt.selected = year === currentYear;
       yearSelect.appendChild(opt);
     });
@@ -2074,99 +2209,62 @@
     box.innerHTML = '';
     if (!rows.length) {
       box.innerHTML = '<div class="muted-small">No hay asistencias para el periodo seleccionado.</div>';
-      // destroy chart if exists
-      if (teachersChart) { teachersChart.destroy(); teachersChart = null; }
       return;
     }
 
     const showAll = document.body.getAttribute('data-teacher-list') === 'all';
     const TOP = showAll ? rows : rows.slice(0, 8);
-    TOP.forEach(item => {
-      const div = document.createElement('div');
-      div.className = 'teacher-row';
-      const pct = Math.min(100, Math.round((item.total / 4) * 100));
-      const cumplio = item.total >= 4;
-      const color = pct >= 75 ? getComputedStyle(document.documentElement).getPropertyValue('--progress-good').trim() : (pct >= 50 ? getComputedStyle(document.documentElement).getPropertyValue('--progress-mid').trim() : getComputedStyle(document.documentElement).getPropertyValue('--progress-bad').trim());
-      div.innerHTML = `
-        <div class="avatar">${initiales(item.nombre)}</div>
-        <div>
-          <div style="display:flex;align-items:center;gap:8px">
-            <div class="teacher-name">${escapeHTML(item.nombre)}</div>
-            ${cumplio ? '<span class="status ok" style="padding:4px 8px;font-size:11px;margin-left:6px">Cumpli&oacute;</span>' : ''}
-          </div>
-        </div>
-        <div class="teacher-count">${item.total} ${item.total === 1 ? 'dia' : 'dias'}</div>
-      `;
-      // add tooltip/title for accessibility with exact percent
-      div.title = `${item.total}/4 (${pct}%)`;
-      // click to open docente report
-      div.style.cursor = 'pointer';
-      div.addEventListener('click', () => {
-        selectedTeacher = item.nombre;
-        renderTeacherReport();
-        setView('docente');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
-      box.appendChild(div);
-    });
 
-    // render/update Chart.js horizontal bar showing top teachers
     const chartContainerId = 'teachers-chart-canvas';
     let canvas = document.getElementById(chartContainerId);
     if (!canvas) {
       canvas = document.createElement('canvas');
       canvas.id = chartContainerId;
       canvas.style.marginTop = '12px';
-      canvas.style.maxHeight = '220px';
+      canvas.style.maxHeight = '340px';
       box.appendChild(canvas);
     }
 
     const labels = TOP.map(t => nombreCorto(t.nombre));
     const data = TOP.map(t => t.total);
 
-    if (teachersChart) {
-      teachersChart.data.labels = labels;
-      teachersChart.data.datasets[0].data = data;
-      teachersChart.update();
-    } else {
-      teachersChart = new Chart(canvas.getContext('2d'), {
-        type: 'bar',
-        data: {
-          labels,
-          datasets: [{
-            label: 'Dias asistidos',
-            data,
-            backgroundColor: labels.map((_,i) => {
-              const pct = Math.min(100, Math.round((TOP[i].total / 4) * 100));
-              return pct >= 75 ? getComputedStyle(document.documentElement).getPropertyValue('--progress-good').trim() : (pct >=50 ? getComputedStyle(document.documentElement).getPropertyValue('--progress-mid').trim() : getComputedStyle(document.documentElement).getPropertyValue('--progress-bad').trim());
-            }),
-            borderRadius: 8,
-            barThickness: 14,
-          }]
+    teachersChart = new Chart(canvas.getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Dias asistidos',
+          data,
+          backgroundColor: labels.map((_,i) => {
+            const pct = Math.min(100, Math.round((TOP[i].total / 4) * 100));
+            return pct >= 75 ? getComputedStyle(document.documentElement).getPropertyValue('--progress-good').trim() : (pct >=50 ? getComputedStyle(document.documentElement).getPropertyValue('--progress-mid').trim() : getComputedStyle(document.documentElement).getPropertyValue('--progress-bad').trim());
+          }),
+          borderRadius: 8,
+          barThickness: 14,
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        maintainAspectRatio: false,
+        scales: {
+          x: { beginAtZero: true, max: 4, ticks: { stepSize: 1, color: getComputedStyle(document.documentElement).getPropertyValue('--azul').trim() } },
+          y: { ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--azul').trim(), font: { weight: 800 } } }
         },
-        options: {
-          indexAxis: 'y',
-          maintainAspectRatio: false,
-          scales: {
-            x: { beginAtZero: true, max: 4, ticks: { stepSize: 1, color: getComputedStyle(document.documentElement).getPropertyValue('--azul').trim() } },
-            y: { ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--azul').trim(), font: { weight: 800 } } }
-          },
-            plugins: {
-              legend: { display: false },
-              tooltip: {
-                callbacks: {
-                  label: ctx => {
-                    const dias = ctx.parsed.x;
-                    const pct = Math.min(100, Math.round((dias / 4) * 100));
-                    return `${dias} dias — ${pct}% de la meta (4)`;
-                  }
-                }
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: ctx => {
+                const dias = ctx.parsed.x;
+                const pct = Math.min(100, Math.round((dias / 4) * 100));
+                return `${dias} dias — ${pct}% de la meta (4)`;
               }
             }
+          }
         }
-      });
-    }
-    // add small legend describing color meaning
+      }
+    });
+
     let legendEl = document.getElementById('teachers-color-legend');
     if (!legendEl) {
       legendEl = document.createElement('div');
@@ -2182,12 +2280,11 @@
       `;
       box.appendChild(legendEl);
     } else {
-      // update colors if exists
       legendEl.querySelectorAll('.legend-marker')[0].style.background = getComputedStyle(document.documentElement).getPropertyValue('--progress-good').trim();
       legendEl.querySelectorAll('.legend-marker')[1].style.background = getComputedStyle(document.documentElement).getPropertyValue('--progress-mid').trim();
       legendEl.querySelectorAll('.legend-marker')[2].style.background = getComputedStyle(document.documentElement).getPropertyValue('--progress-bad').trim();
     }
-    // add export button under chart
+
     const exportBtnId = 'teachers-chart-export';
     let exp = document.getElementById(exportBtnId);
     if (!exp) {
@@ -2200,10 +2297,6 @@
       exp.addEventListener('click', exportTeachersChartPNG);
       box.appendChild(exp);
     }
-    // add subtle animation to progress fills
-    setTimeout(() => {
-      box.querySelectorAll('.progress-fill').forEach(el => el.style.transition = 'width .7s cubic-bezier(.2,.9,.2,1)');
-    }, 60);
   }
 
   // Toggle Top 8 / All
@@ -2227,6 +2320,60 @@
     } catch (e) {
       alert('No se pudo exportar el gráfico.');
     }
+  }
+
+  function setupPanelExpanders() {
+    const expandSVG = '<svg viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>';
+    const closeSVG  = '<svg viewBox="0 0 24 24"><path d="M8 3v5H3"/><path d="M16 21v-5h5"/><path d="M3 8l7 7"/><path d="M21 16l-7-7"/></svg>';
+    const overlay = document.getElementById('panel-overlay');
+
+    function collapseAll() {
+      document.querySelectorAll('.panel.expanded').forEach(p => {
+        p.classList.remove('expanded');
+        const btn = p.querySelector('.panel-expand');
+        if (btn) {
+          const orig = btn.dataset.origTitle || '';
+          btn.innerHTML = expandSVG + ' Expandir';
+          btn.classList.remove('is-expanded');
+          btn.setAttribute('aria-label', orig);
+          btn.title = orig;
+        }
+      });
+      overlay.classList.remove('active');
+      // Re-render monthly chart at normal size
+      if (REGISTROS.length) renderMonthlyChart(REGISTROS.filter(r => r.year === currentYear));
+    }
+
+    overlay.addEventListener('click', collapseAll);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') collapseAll(); });
+
+    document.querySelectorAll('.panel-expand').forEach(button => {
+      const originalTitle = button.title;
+      button.dataset.origTitle = originalTitle;
+
+      button.addEventListener('click', () => {
+        const panel = button.closest('.panel');
+        if (!panel) return;
+        const wasExpanded = panel.classList.contains('expanded');
+
+        collapseAll();
+
+        if (!wasExpanded) {
+          panel.classList.add('expanded');
+          button.innerHTML = closeSVG + ' Cerrar';
+          button.classList.add('is-expanded');
+          button.setAttribute('aria-label', 'Cerrar panel');
+          button.title = 'Cerrar panel';
+          overlay.classList.add('active');
+          // Re-render monthly chart at expanded size
+          if (panel.querySelector('#monthly-chart')) {
+            setTimeout(() => {
+              if (REGISTROS.length) renderMonthlyChart(REGISTROS.filter(r => r.year === currentYear));
+            }, 50);
+          }
+        }
+      });
+    });
   }
 
   function renderTeacherReport() {
@@ -2280,7 +2427,7 @@
 
     if (!nombre) {
       title.textContent = 'Selecciona un docente';
-      range.textContent = `Año escolar ${currentYear}`;
+      range.textContent = `Ano escolar ${currentYear}`;
       summary.innerHTML = '';
       tbody.innerHTML = '<tr><td colspan="4">No hay datos disponibles.</td></tr>';
       return;
@@ -2293,7 +2440,7 @@
     const last = records[records.length - 1];
 
     title.textContent = nombre;
-    range.textContent = `Año escolar ${currentYear}`;
+    range.textContent = `Ano escolar ${currentYear}`;
     summary.innerHTML = `
       <div class="summary-chip"><span>Dias asistidos</span><strong>${dayCount}</strong></div>
       <div class="summary-chip"><span>Sesiones registradas</span><strong>${records.length}</strong></div>
@@ -2301,7 +2448,7 @@
     `;
 
     if (!records.length) {
-      tbody.innerHTML = '<tr><td colspan="4">Este docente no registra asistencia en el año seleccionado.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="4">Este docente no registra asistencia en el ano seleccionado.</td></tr>';
       return;
     }
 
@@ -2316,19 +2463,20 @@
   }
 
   function renderMonthlyChart(yearRecords) {
-    const chart = document.getElementById('monthly-chart');
+    const canvas = document.getElementById('monthly-chart');
+    const wrap = document.getElementById('monthly-chart-wrap');
     const stats = document.getElementById('monthly-stats');
     const legend = document.getElementById('monthly-legend');
+
     const counts = Array.from({ length: 12 }, () => 0);
     for (let month = 0; month < 12; month++) {
-      const monthSummary = summarizeDays(yearRecords.filter(r => r.month === month));
-      counts[month] = monthSummary.attendedDays;
+      counts[month] = summarizeDays(yearRecords.filter(r => r.month === month)).attendedDays;
     }
-    const max = Math.max(...counts, 1);
+
     const previousMonth = currentMonth === 0 ? 11 : currentMonth - 1;
-    const previousYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+    const previousYear  = currentMonth === 0 ? currentYear - 1 : currentYear;
     const previousTotal = summarizeDays(REGISTROS.filter(r => r.year === previousYear && r.month === previousMonth)).attendedDays;
-    const currentTotal = counts[currentMonth] || 0;
+    const currentTotal  = counts[currentMonth] || 0;
 
     stats.innerHTML = `
       <div class="month-stat">
@@ -2347,24 +2495,97 @@
       </div>
     `;
 
-    chart.innerHTML = '';
-
-    counts.forEach((total, idx) => {
-      const item = document.createElement('div');
-      item.className = 'bar-item';
-      const barClass = idx === currentMonth ? 'current' : (previousYear === currentYear && idx === previousMonth ? 'previous' : '');
-      item.innerHTML = `
-        <div class="bar ${barClass}" style="height:${Math.max(4, (total / max) * 160)}px"><strong>${total}</strong></div>
-        <div class="bar-label">${MONTHS_SHORT[idx]}</div>
-      `;
-      chart.appendChild(item);
-    });
-
     document.getElementById('monthly-help').textContent = `Total anual: ${counts.reduce((a, b) => a + b, 0)}`;
     legend.innerHTML = `
       <span><i class="legend-dot previous"></i>${MONTHS[previousMonth]} (${previousTotal})</span>
       <span><i class="legend-dot current"></i>${MONTHS[currentMonth]} (${currentTotal})</span>
     `;
+
+    const pointColors = counts.map((_, i) => {
+      if (i === currentMonth)  return '#15bf62';
+      if (i === previousMonth && previousYear === currentYear) return '#174f9c';
+      return '#cfe0fb';
+    });
+
+    const pointRadii = counts.map((_, i) =>
+      (i === currentMonth || (i === previousMonth && previousYear === currentYear)) ? 6 : 4
+    );
+
+    const gradient = canvas.getContext('2d').createLinearGradient(0, 0, 0, 180);
+    gradient.addColorStop(0, 'rgba(23,79,156,.18)');
+    gradient.addColorStop(1, 'rgba(23,79,156,.0)');
+
+    if (monthlyChart) { try { monthlyChart.destroy(); } catch(e){} monthlyChart = null; }
+
+    // Resize wrap to fill available height when expanded
+    const panelExpanded = canvas.closest('.panel.expanded');
+    if (panelExpanded) {
+      wrap.style.height = '340px';
+    } else {
+      wrap.style.height = '210px';
+    }
+
+    monthlyChart = new Chart(canvas.getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: MONTHS_SHORT,
+        datasets: [{
+          label: 'Dias asistidos',
+          data: counts,
+          borderColor: '#174f9c',
+          borderWidth: 2.5,
+          pointBackgroundColor: pointColors,
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          pointRadius: pointRadii,
+          pointHoverRadius: 8,
+          tension: 0.42,
+          fill: true,
+          backgroundColor: gradient,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: { duration: 500, easing: 'easeOutQuart' },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: {
+              color: '#627493',
+              font: { size: 11, weight: '700' },
+            },
+            border: { display: false },
+          },
+          y: {
+            beginAtZero: true,
+            grid: { color: '#edf1f6', lineWidth: 1 },
+            ticks: {
+              stepSize: 1,
+              color: '#627493',
+              font: { size: 11 },
+              padding: 6,
+            },
+            border: { display: false, dash: [4,4] },
+          }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#0d2f63',
+            titleColor: '#fff',
+            bodyColor: 'rgba(255,255,255,.85)',
+            padding: 10,
+            cornerRadius: 10,
+            displayColors: false,
+            callbacks: {
+              title: ctx => MONTHS[ctx[0].dataIndex],
+              label: ctx => `${ctx.parsed.y} dias con asistencia`,
+            }
+          }
+        }
+      }
+    });
   }
 
   function renderIndicators(yearRecords) {
@@ -2374,6 +2595,11 @@
     const rate = summary.rate;
     const degrees = summary.scheduledDays ? (summary.attendedDays / summary.scheduledDays) * 360 : 0;
 
+    const teacherDays = new Map();
+    yearRecords.filter(r => r.asistio).forEach(r => {
+      const key = `${r.docenteKey}::${r.key}`;
+      teacherDays.set(key, true);
+    });
     document.getElementById('donut-subtitle').textContent = bimester.label;
     document.getElementById('bimester-range').textContent = `${formatFecha(bimester.startDate)} al ${formatFecha(bimester.endDate)}`;
     document.getElementById('attendance-donut').style.setProperty('--asistencia-deg', `${degrees}deg`);
@@ -2565,7 +2791,7 @@
     if (![...yearSelect.options].some(opt => Number(opt.value) === currentYear)) {
       const opt = document.createElement('option');
       opt.value = currentYear;
-      opt.textContent = `Año escolar ${currentYear}`;
+      opt.textContent = `Ano escolar ${currentYear}`;
       yearSelect.appendChild(opt);
     }
     yearSelect.value = String(currentYear);
@@ -2576,6 +2802,8 @@
   }
 
   setView(viewFromHash(), false);
+  setupPanelExpanders();
+  document.body.setAttribute('data-teacher-list', 'top');
   cargarDatos();
 </script>
 </body>
