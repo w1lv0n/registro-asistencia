@@ -1452,7 +1452,7 @@
     </nav>
 
     <div class="sidebar-foot">
-      Ano escolar
+      Año escolar
       <strong id="sidebar-year">2026</strong>
       Datos tomados de la hoja publicada del registro AIP.
     </div>
@@ -1472,7 +1472,7 @@
           <p class="page-subtitle">Resumen para direccion y subdireccion, calculado desde el registro de uso del AIP.</p>
         </div>
         <div class="toolbar">
-          <select class="control" id="year-select" aria-label="Ano escolar"></select>
+          <select class="control" id="year-select" aria-label="Año escolar"></select>
           <select class="control" id="month-select" aria-label="Mes del reporte"></select>
           <select class="control" id="bimester-select" aria-label="Bimestre del reporte"></select>
           <div class="search">
@@ -1510,9 +1510,9 @@
               <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-7"/></svg>
             </div>
             <div>
-              <div class="metric-label">Dias con uso del ano</div>
+              <div class="metric-label">Dias con uso del año</div>
               <div class="metric-value" id="metric-year">0</div>
-              <div class="metric-note" id="metric-year-note">Ano escolar</div>
+              <div class="metric-note" id="metric-year-note">Año escolar</div>
             </div>
           </article>
           <article class="metric-card">
@@ -1617,7 +1617,7 @@
                 Indicadores
               </div>
               <div class="panel-actions">
-                <span class="muted-small">Ano escolar y ultimos meses</span>
+                <span class="muted-small">Año escolar y ultimos meses</span>
                 <button class="panel-expand" type="button" aria-label="Expandir indicadores" title="Expandir indicadores">
                   <svg viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
                   Expandir
@@ -1628,7 +1628,7 @@
             <div class="indicators-grid">
               <article class="indicator-card">
                 <div class="indicator-title">Asistencia vs. No asistencia</div>
-                <div class="indicator-subtitle" id="donut-subtitle">Ano escolar</div>
+                <div class="indicator-subtitle" id="donut-subtitle">Año escolar</div>
                 <div class="indicator-subtitle" id="bimester-range"></div>
                 <div class="donut-wrap">
                   <div class="donut" id="attendance-donut" style="--asistencia-deg: 0deg">
@@ -1737,7 +1737,7 @@
               <span class="section-icon"><svg viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/></svg></span>
               <span id="teacher-detail-title">Selecciona un docente</span>
             </div>
-            <span class="muted-small" id="teacher-detail-range">Ano escolar</span>
+            <span class="muted-small" id="teacher-detail-range">Año escolar</span>
           </div>
           <div class="teacher-report-summary" id="teacher-report-summary"></div>
           <div class="table-wrap">
@@ -2086,7 +2086,7 @@
     (years.length ? years : [currentYear]).forEach(year => {
       const opt = document.createElement('option');
       opt.value = year;
-      opt.textContent = `Ano escolar ${year}`;
+      opt.textContent = `Año escolar ${year}`;
       opt.selected = year === currentYear;
       yearSelect.appendChild(opt);
     });
@@ -2427,7 +2427,7 @@
 
     if (!nombre) {
       title.textContent = 'Selecciona un docente';
-      range.textContent = `Ano escolar ${currentYear}`;
+      range.textContent = `Año escolar ${currentYear}`;
       summary.innerHTML = '';
       tbody.innerHTML = '<tr><td colspan="4">No hay datos disponibles.</td></tr>';
       return;
@@ -2440,7 +2440,7 @@
     const last = records[records.length - 1];
 
     title.textContent = nombre;
-    range.textContent = `Ano escolar ${currentYear}`;
+    range.textContent = `Año escolar ${currentYear}`;
     summary.innerHTML = `
       <div class="summary-chip"><span>Dias asistidos</span><strong>${dayCount}</strong></div>
       <div class="summary-chip"><span>Sesiones registradas</span><strong>${records.length}</strong></div>
@@ -2448,7 +2448,7 @@
     `;
 
     if (!records.length) {
-      tbody.innerHTML = '<tr><td colspan="4">Este docente no registra asistencia en el ano seleccionado.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="4">Este docente no registra asistencia en el año seleccionado.</td></tr>';
       return;
     }
 
@@ -2791,7 +2791,7 @@
     if (![...yearSelect.options].some(opt => Number(opt.value) === currentYear)) {
       const opt = document.createElement('option');
       opt.value = currentYear;
-      opt.textContent = `Ano escolar ${currentYear}`;
+      opt.textContent = `Año escolar ${currentYear}`;
       yearSelect.appendChild(opt);
     }
     yearSelect.value = String(currentYear);
